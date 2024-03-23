@@ -1,6 +1,6 @@
-const fs = require("fs");
+import fs from "fs";
 
-class ProductManager {
+export default class ProductManager {
   constructor(path) {
     this.path = path;
   }
@@ -38,7 +38,6 @@ class ProductManager {
       encoding: "utf-8",
     });
     let parsedData = JSON.parse(productData);
-
     return parsedData;
   }
 
@@ -58,7 +57,6 @@ class ProductManager {
     if (codeValidation) {
       return `Codigo ${code} ya esta registrado`;
     }
-
     await this.saveData(productList);
   }
 
@@ -99,7 +97,6 @@ class ProductManager {
       const { id, ...rest } = productData;
       productList[i] = { ...productList[i], ...rest };
     }
-
     await this.saveData(productList);
   }
 
@@ -117,9 +114,6 @@ class ProductManager {
     productList.forEach((p) => {
       p.id = newId++;
     });
-
     await this.saveData(productList);
   }
 }
-
-module.exports = ProductManager;
