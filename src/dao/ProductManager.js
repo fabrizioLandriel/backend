@@ -4,27 +4,40 @@ export default class ProductManager {
   constructor(path) {
     this.path = path;
   }
-  async validateProduct(title, description, price, thumbnail, code, stock) {
-    if (!title || !description || !price || !thumbnail || !code || !stock)
-      return "Verificar campos sin llenar";
+  async validateProduct(
+    title,
+    description,
+    code,
+    price,
+    status = true,
+    stock,
+    category,
+    thumbnails = [] // tambien pasar en el body de la request como array
+  ) {
+    if (!title || !description || !code || !price || !stock || !category)
+      return "Check unfilled fields";
 
     if (fs.existsSync(this.path)) {
       await this.addJsonProduct(
         title,
         description,
-        price,
-        thumbnail,
         code,
-        stock
+        price,
+        status,
+        stock,
+        category,
+        thumbnails
       );
     } else {
       await this.createJsonProduct(
         title,
         description,
-        price,
-        thumbnail,
         code,
-        stock
+        price,
+        status,
+        stock,
+        category,
+        thumbnails
       );
     }
   }
@@ -41,35 +54,57 @@ export default class ProductManager {
     return parsedData;
   }
 
-  async addJsonProduct(title, description, price, thumbnail, code, stock) {
+  async addJsonProduct(
+    title,
+    description,
+    code,
+    price,
+    status,
+    stock,
+    category,
+    thumbnails
+  ) {
     let productList = await this.readData();
     let productAdded = {
       id: productList.length + 1,
       title: title,
       description: description,
-      price: "$" + price,
-      thumbnail: thumbnail,
       code: code,
+      price: "$" + price,
+      status: status,
       stock: stock,
+      category: category,
+      thumbnails: thumbnails,
     };
     const codeValidation = productList.some((product) => product.code == code);
     productList.push(productAdded);
     if (codeValidation) {
-      return `Codigo ${code} ya esta registrado`;
+      return `Code ${code} is already registered`;
     }
     await this.saveData(productList);
   }
 
-  async createJsonProduct(title, description, price, thumbnail, code, stock) {
+  async createJsonProduct(
+    title,
+    description,
+    code,
+    price,
+    status,
+    stock,
+    category,
+    thumbnails
+  ) {
     let cart = [];
     cart.push({
       id: cart.length + 1,
       title: title,
       description: description,
-      price: "$" + price,
-      thumbnail: thumbnail,
       code: code,
+      price: "$" + price,
+      status: status,
       stock: stock,
+      category: category,
+      thumbnails: thumbnails,
     });
     await this.saveData(cart);
   }
@@ -84,15 +119,18 @@ export default class ProductManager {
     if (search) {
       return search;
     } else {
-      return "Producto no encontrado";
+      return "Product not found";
     }
   }
 
   async updateProducts(id, productData) {
-    // ---> CREAR VARIABLE 'PRODUCTDATA' CON LAS PROPIEDADES DEL PRODUCTO A ACTUALIZAR <---
+    // ---> 'PRODUCTDATA' se pasa por el body de postman<---
     let productList = await this.readData();
     let findProduct = productList.find((p) => p.id === id);
     let i = productList.indexOf(findProduct);
+    if (!findProduct) {
+      return "Product not found";
+    }
     if (i !== -1) {
       const { id, ...rest } = productData;
       productList[i] = { ...productList[i], ...rest };
@@ -108,7 +146,7 @@ export default class ProductManager {
       productList.splice(i, 1);
     }
     if (!findProduct) {
-      return "Producto no existente";
+      return "Product not found";
     }
     let newId = 1;
     productList.forEach((p) => {

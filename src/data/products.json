@@ -1,38 +1,86 @@
 [
-  {
-    "id": 1,
-    "title": "teclado",
-    "description": "tecladogamer",
-    "price": "$10",
-    "thumbnail": "sin imagen",
-    "code": "tec1",
-    "stock": 10
-  },
-  {
-    "id": 2,
-    "title": "mouse",
-    "description": "mousegamer",
-    "price": "$10",
-    "thumbnail": "sin imagen",
-    "code": "mou1",
-    "stock": 10
-  },
-  {
-    "id": 3,
-    "title": "auricular",
-    "description": "auriculargamer",
-    "price": "$10",
-    "thumbnail": "sin imagen",
-    "code": "aur1",
-    "stock": 10
-  },
-  {
-    "id": 4,
-    "title": "monitor",
-    "description": "monitorgamer",
-    "price": "$10",
-    "thumbnail": "sin imagen",
-    "code": "mon1",
-    "stock": 10
-  }
+     {
+          "id": 1,
+          "title": "teclado",
+          "description": "tecladogamer",
+          "code": "tec1",
+          "price": "$10",
+          "status": true,
+          "stock": 10,
+          "category": "teclados",
+          "thumbnails": [
+               "img",
+               "img2"
+          ]
+     },
+     {
+          "id": 2,
+          "title": "mouse",
+          "description": "mousegamer",
+          "code": "mou1",
+          "price": "$10",
+          "status": true,
+          "stock": 10,
+          "category": "mouses",
+          "thumbnails": [
+               "img",
+               "img2"
+          ]
+     },
+     {
+          "id": 3,
+          "title": "auricular",
+          "description": "auriculargamer",
+          "code": "aur1",
+          "price": "$10",
+          "status": true,
+          "stock": 10,
+          "category": "auriculares",
+          "thumbnails": [
+               "img",
+               "img2"
+          ]
+     },
+     {
+          "id": 4,
+          "title": "monitor",
+          "description": "monitorgamer",
+          "code": "mon1",
+          "price": "$10",
+          "status": true,
+          "stock": 10,
+          "category": "monitores",
+          "thumbnails": [
+               "img",
+               "img2"
+          ]
+     },
+     {
+          "id": 5,
+          "title": "escritorio",
+          "description": "escritoriogamer",
+          "code": "esc1",
+          "price": "$10",
+          "status": false,
+          "stock": 10,
+          "category": "escritorios",
+          "thumbnails": [
+               "img",
+               "img2"
+          ]
+     },
+     {
+          "id": 6,
+          "title": "Mousepad",
+          "description": "Mousepad redragon",
+          "code": "pad1",
+          "price": "$5",
+          "status": true,
+          "stock": 15,
+          "category": "mousepads",
+          "thumbnails": [
+               "img1",
+               "img2"
+          ]
+     }
 ]
