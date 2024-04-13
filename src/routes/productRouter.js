@@ -1,7 +1,12 @@
 import { Router } from "express";
+import path from "path";
 import ProductManager from "../dao/ProductManager.js";
+import __dirname from "../utils.js";
+import { io } from "../app.js";
 export const router = Router();
-const productManager = new ProductManager("./src/data/products.json");
+const productManager = new ProductManager(
+  path.join(__dirname, "/data/products.json")
+);
 
 router.get("/", async (req, res) => {
   try {
@@ -25,7 +30,7 @@ router.get("/:pid", async (req, res) => {
   try {
     let pId = req.params.pid;
     pId = Number(pId);
-    let product = await productManager.getProductsById(pId);
+    const product = await productManager.getProductsById(pId);
     if (product) {
       res.json(product);
     }
@@ -36,30 +41,13 @@ router.get("/:pid", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      code,
-      price,
-      status,
-      stock,
-      category,
-      thumbnails,
-    } = req.body;
-    const products = await productManager.validateProduct(
-      title,
-      description,
-      code,
-      price,
-      status,
-      stock,
-      category,
-      thumbnails
-    );
+    const products = await productManager.validateProduct({ ...req.body });
     res.json(products);
   } catch (error) {
     res.status(300).json({ error: "error creating product" });
   }
+  const productList = await productManager.getProducts();
+  io.emit("updateProducts", productList);
 });
 
 router.put("/:pid", async (req, res) => {
@@ -67,9 +55,8 @@ router.put("/:pid", async (req, res) => {
     let pid = req.params.pid;
     pid = parseInt(pid);
     let productChanges = req.body;
-    let products = await productManager.updateProducts(pid, productChanges);
+    const products = await productManager.updateProducts(pid, productChanges);
     res.json(products);
-    console.log(products);
   } catch (error) {
     res.status(300).json({ error: "Error when modifying the product" });
   }
@@ -84,4 +71,6 @@ router.delete("/:pid", async (req, res) => {
   } catch (error) {
     res.status(300).json({ error: `error deleting product ${pid}` });
   }
+  const productList = await productManager.getProducts();
+  io.emit("deleteProducts", productList);
 });

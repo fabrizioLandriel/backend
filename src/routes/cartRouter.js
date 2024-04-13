@@ -1,7 +1,9 @@
 import { Router } from "express";
+import path from "path";
 export const router = Router();
 import CartManager from "../dao/CartManager.js";
-const cartManager = new CartManager("./src/data/cart.json");
+import __dirname from "../utils.js";
+const cartManager = new CartManager(path.join(__dirname, "/data/cart.json"));
 
 router.post("/", async (req, res) => {
   try {
@@ -17,6 +19,7 @@ router.get("/:cid", async (req, res) => {
     let cid = req.params.cid;
     cid = Number(cid);
     let cartById = await cartManager.getCartById(cid);
+
     res.json(cartById);
   } catch (error) {
     res.status(300).json({ error: `error getting cart ${cid}` });

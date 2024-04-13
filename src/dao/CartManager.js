@@ -1,6 +1,10 @@
 import fs from "fs";
 import ProductManager from "./ProductManager.js";
-const productManager = new ProductManager("./src/data/products.json");
+import __dirname from "../utils.js";
+import path from "path";
+const productManager = new ProductManager(
+  path.join(__dirname, "/data/products.json")
+);
 export default class CartManager {
   constructor(path) {
     this.path = path;

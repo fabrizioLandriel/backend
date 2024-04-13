@@ -4,7 +4,8 @@ export default class ProductManager {
   constructor(path) {
     this.path = path;
   }
-  async validateProduct(
+
+  async validateProduct({
     title,
     description,
     code,
@@ -12,8 +13,8 @@ export default class ProductManager {
     status = true,
     stock,
     category,
-    thumbnails = [] // tambien pasar en el body de la request como array
-  ) {
+    thumbnails = [], // tambien pasar en el body de la request como array
+  }) {
     if (!title || !description || !code || !price || !stock || !category)
       return "Check unfilled fields";
 
