@@ -1,39 +1,59 @@
 import { Router } from "express";
-import path from "path";
 export const router = Router();
-import CartManager from "../dao/CartManager.js";
-import __dirname from "../utils.js";
-const cartManager = new CartManager(path.join(__dirname, "/data/cart.json"));
+import CartManager from "../dao/CartManagerDB.js";
+
+import { isValidObjectId } from "mongoose";
+const cartManager = new CartManager();
+
+router.get("/", async (req, res) => {
+  try {
+    let getAllCarts = await cartManager.getCarts();
+    res.json({ getAllCarts });
+  } catch (error) {
+    res.status(300).json({ error: `error getting cart ${cid}` });
+  }
+});
 
 router.post("/", async (req, res) => {
   try {
-    let cart = await cartManager.validateCart();
-    res.json(cart);
+    await cartManager.createCart();
+    let carts = await cartManager.getCarts();
+    res.json({
+      payload: `Cart created!`,
+    });
   } catch (error) {
     res.status(300).json({ error: "error creating cart" });
   }
 });
 
 router.get("/:cid", async (req, res) => {
-  try {
-    let cid = req.params.cid;
-    cid = Number(cid);
-    let cartById = await cartManager.getCartById(cid);
+  let { cid } = req.params;
+  if (!isValidObjectId(cid)) {
+    return res.status(400).json({
+      error: `Enter a valid MongoDB id`,
+    });
+  }
 
-    res.json(cartById);
+  try {
+    let cartById = await cartManager.getCartById(cid);
+    res.json({ cartById });
   } catch (error) {
     res.status(300).json({ error: `error getting cart ${cid}` });
   }
 });
 
 router.post("/:cid/product/:pid", async (req, res) => {
-  try {
-    let cid = Number(req.params.cid);
-    let pid = Number(req.params.pid);
+  let { cid, pid } = req.params;
+  if (!isValidObjectId(cid, pid)) {
+    return res.status(400).json({
+      error: `Enter a valid MongoDB id`,
+    });
+  }
 
+  try {
     await cartManager.addProducts(cid, pid);
-    let showCart = await cartManager.getCartById(cid);
-    res.json(showCart);
+    let cartUpdated = await cartManager.getCartById(cid);
+    res.json({ payload: cartUpdated });
   } catch (error) {
     res
       .status(300)

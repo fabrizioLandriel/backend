@@ -1,6 +1,6 @@
 const socket = io();
 let productsContainer = document.getElementById("productsContainer");
-socket.emit("message", "websocket server connected");
+socket.emit("connectionServer", "websocket server connected");
 
 socket.on("updateProducts", (products) => {
   productsContainer.innerHTML = "";

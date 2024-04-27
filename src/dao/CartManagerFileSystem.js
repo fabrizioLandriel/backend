@@ -1,5 +1,5 @@
 import fs from "fs";
-import ProductManager from "./ProductManager.js";
+import ProductManager from "./ProductManagerFileSystem.js";
 import __dirname from "../utils.js";
 import path from "path";
 const productManager = new ProductManager(
@@ -19,7 +19,7 @@ export default class CartManager {
     return "Cart created successfully!";
   }
 
-  async readData() {
+  async getCart() {
     let cartData = await fs.promises.readFile(this.path, {
       encoding: "utf-8",
     });
@@ -32,7 +32,7 @@ export default class CartManager {
   }
 
   async addJsonCart() {
-    let cartList = await this.readData();
+    let cartList = await this.getCart();
     cartList.push({ id: cartList.length + 1, products: [] });
     await this.saveData(cartList);
   }
@@ -43,13 +43,8 @@ export default class CartManager {
     await this.saveData(cart);
   }
 
-  async getCart() {
-    let cart = await this.readData();
-    return cart;
-  }
-
   async getCartById(id) {
-    let cart = await this.readData();
+    let cart = await this.getCart();
     const searchCart = cart.find((cart) => cart.id === id);
     if (searchCart) {
       return searchCart.products;

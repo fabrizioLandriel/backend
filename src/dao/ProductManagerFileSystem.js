@@ -47,7 +47,7 @@ export default class ProductManager {
     await fs.promises.writeFile(this.path, JSON.stringify(data, null, 5));
   }
 
-  async readData() {
+  async getProducts() {
     let productData = await fs.promises.readFile(this.path, {
       encoding: "utf-8",
     });
@@ -65,7 +65,7 @@ export default class ProductManager {
     category,
     thumbnails
   ) {
-    let productList = await this.readData();
+    let productList = await this.getProducts();
     let productAdded = {
       id: productList.length + 1,
       title: title,
@@ -110,12 +110,8 @@ export default class ProductManager {
     await this.saveData(cart);
   }
 
-  async getProducts() {
-    return await this.readData();
-  }
-
   async getProductsById(id) {
-    let productList = await this.readData();
+    let productList = await this.getProducts();
     const search = productList.find((product) => product.id === id);
     if (search) {
       return search;
@@ -126,7 +122,7 @@ export default class ProductManager {
 
   async updateProducts(id, productData) {
     // ---> 'PRODUCTDATA' se pasa por el body de postman<---
-    let productList = await this.readData();
+    let productList = await this.getProducts();
     let findProduct = productList.find((p) => p.id === id);
     let i = productList.indexOf(findProduct);
     if (!findProduct) {
@@ -140,7 +136,7 @@ export default class ProductManager {
   }
 
   async deleteProducts(productId) {
-    let productList = await this.readData();
+    let productList = await this.getProducts();
     let findProduct = productList.find((p) => p.id === productId);
     let i = productList.indexOf(findProduct);
     if (i !== -1) {
