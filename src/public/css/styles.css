@@ -125,13 +125,14 @@ input {
   height: 500px;
 }
 
-.msg strong,
-p {
+.msg strong {
   margin-left: 10px;
   color: aliceblue;
 }
+
 .msg p {
   border-radius: 10px;
   width: max-content;
   padding: 5px;
+  color: aliceblue;
 }
