@@ -59,8 +59,4 @@ Swal.fire({
       divMessage.scrollTop = divMessage.scrollHeight;
     });
   });
-
-  socket.on("outUser", (findUser) => {
-    console.log(findUser);
-  });
 });
