@@ -45,6 +45,7 @@ Swal.fire({
       </div>
     </div>
     `;
+    divMessage.scrollTop = divMessage.scrollHeight;
   });
 
   socket.on("previousMessages", (messages) => {
