@@ -25,8 +25,54 @@ export default class ProductManager {
     await productsModel.create(productAdded);
   }
 
-  async getProducts() {
-    return await productsModel.find();
+  async getProducts(limit = 10, page = 1, price, query) {
+    if (price == "asc") {
+      price = 1;
+    } else {
+      price = -1;
+    }
+    let options = {
+      limit,
+      page,
+      lean: true,
+      sort: price ? { price } : undefined,
+    };
+
+    let filter = query ? query : {};
+
+    try {
+      let {
+        docs: payload,
+        totalPages,
+        prevPage,
+        nextPage,
+        page,
+        hasPrevPage,
+        hasNextPage,
+        prevLink,
+        nextLink,
+      } = await productsModel.paginate(filter, options);
+
+      let paginationInfo = {
+        status: "success",
+        payload,
+        totalPages,
+        prevPage,
+        nextPage,
+        page,
+        hasPrevPage,
+        hasNextPage,
+        prevLink: hasPrevPage ? `/products?page=${prevPage}` : null,
+        nextLink: hasNextPage ? `/products?page=${nextPage}` : null,
+      };
+
+      return paginationInfo;
+    } catch (error) {
+      return {
+        status: "error",
+        message: error.message,
+      };
+    }
   }
 
   async getProductsBy(filtro) {

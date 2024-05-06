@@ -35,3 +35,5 @@ socket.on("deleteProducts", (products) => {
     </tr>`;
   });
 });
+
+fetch("http://localhost:8081/api/products");
