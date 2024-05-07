@@ -146,10 +146,14 @@ router.put("/:cid", async (req, res) => {
     return res.status(300).json({ error: "Cart ID is missing" });
   }
 
+  if (!toUpdate.product || !toUpdate.quantity) {
+    return res.status(300).json({ error: "Invalid Cart" });
+  }
+
   try {
     await cartManager.updateCart(cid, toUpdate);
     res.json({ payload: `Cart ${cid} updated` });
   } catch (error) {
-    return res.status(300).json({ error: `${error.message}` });
+    return res.status(500).json({ error: `${error.message}` });
   }
 });

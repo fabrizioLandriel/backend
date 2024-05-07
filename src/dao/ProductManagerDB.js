@@ -26,11 +26,6 @@ export default class ProductManager {
   }
 
   async getProducts(limit = 10, page = 1, price, query) {
-    if (price == "asc") {
-      price = 1;
-    } else {
-      price = -1;
-    }
     let options = {
       limit,
       page,
@@ -38,8 +33,7 @@ export default class ProductManager {
       sort: price ? { price } : undefined,
     };
 
-    let filter = query ? query : {};
-
+    let filter = query ? query : undefined;
     try {
       let {
         docs: payload,
@@ -62,8 +56,8 @@ export default class ProductManager {
         page,
         hasPrevPage,
         hasNextPage,
-        prevLink: hasPrevPage ? `/products?page=${prevPage}` : null,
-        nextLink: hasNextPage ? `/products?page=${nextPage}` : null,
+        prevLink: hasPrevPage ? `/?page=${prevPage}` : null,
+        nextLink: hasNextPage ? `/?page=${nextPage}` : null,
       };
 
       return paginationInfo;

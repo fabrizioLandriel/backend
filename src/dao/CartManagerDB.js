@@ -89,7 +89,7 @@ export default class CartManager {
 
       if (searchCart) {
         await this.deleteAllProducts(idCart);
-        searchCart.products.push({});
+        searchCart.products.push(toUpdate);
       }
 
       await searchCart.save();

@@ -8,11 +8,15 @@
       <li>
         <a href="/realTimeProducts">Real Time Products</a>
       </li>
+      <li>
+
+      <a href="/carts/6633a148908d0e9e27814a8a"><button class="btn btn-primary" type="button"><i class="fa-solid fa-cart-shopping"></i></button></a>
+      </li>
     </ul>
   </nav>
   <hr />
 </header>
-<main>
+<main class="mainProducts">
   <article id="products">
 
     {{#each products}}
@@ -34,11 +38,32 @@
               stock:
               {{stock}}
             </small></p>
-          <button id=`btnAdd-{{id}}` class="btn btn-success">Add</button>
+          <button id=`btnAdd-{{code}}` class="btn btn-success" onclick="addToCart('{{_id}}')">Add</button>
         </div>
       </div>
 
     {{/each}}
-
+    
   </article>
+<div class="pagination">
+
+    {{#if hasPrevPage}}
+        <a href={{prevLink}}><button>Ant</button></a>
+        {{else}}
+        <button disabled>Ant</button>
+    {{/if}}
+
+      <strong>Page: {{page}}</strong>
+
+    {{#if hasNextPage}}
+        <a href={{nextLink}}><button>Sig</button></a>
+        {{else}}
+        <button disabled>Sig</button>
+    {{/if}}
+
 </main>
+<script
+  type="text/javascript"
+  src="https://cdn.jsdelivr.net/npm/toastify-js"
+></script>
+<script src="/js/cart.js"></script>
