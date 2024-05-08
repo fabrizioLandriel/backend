@@ -7,17 +7,9 @@ const productManager = new ProductManager();
 
 router.get("/", async (req, res) => {
   try {
-    let products = await productManager.getProducts();
-    let limit = req.query.limit;
-
-    limit = Number(limit);
-    let pdata = products;
-    if (limit && limit > 0) {
-      pdata = pdata.slice(0, limit);
-    } else {
-      pdata;
-    }
-    res.json(pdata);
+    let { limit, sort, page, ...filters } = req.query;
+    let products = await productManager.getProducts(limit, page, sort, filters);
+    res.json(products);
   } catch (error) {
     res.status(400).json({ error: `${error.message}` });
   }
