@@ -22,7 +22,7 @@ router.post("/", async (req, res) => {
       payload: `Cart created!`,
     });
   } catch (error) {
-    res.status(300).json({ error: "error creating cart" });
+    res.status(500).json({ error: "error creating cart" });
   }
 });
 
@@ -43,7 +43,7 @@ router.get("/:cid", async (req, res) => {
     }
   } catch (error) {
     res
-      .status(300)
+      .status(500)
       .json({ error: `error getting cart ${cid}, ${error.message}` });
   }
 });
@@ -67,7 +67,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
     res.json({ payload: cartUpdated });
   } catch (error) {
     res
-      .status(300)
+      .status(500)
       .json({ error: `error when adding product ${pid} to cart ${cid}` });
   }
 });
@@ -88,7 +88,7 @@ router.delete("/:cid/product/:pid", async (req, res) => {
     await cartManager.deleteProduct(cid, pid);
     return res.json({ payload: `Product ${pid} deleted from cart ${cid}` });
   } catch (error) {
-    return res.json({ error: `${error.message}` });
+    return res.status(500).json({ error: `${error.message}` });
   }
 });
 
@@ -109,7 +109,7 @@ router.put("/:cid/product/:pid", async (req, res) => {
     await cartManager.updateCartProducts(cid, pid, quantity);
     res.json({ payload: `Product ${pid} updated` });
   } catch (error) {
-    return res.status(300).json({ error: `${error.message}` });
+    return res.status(500).json({ error: `${error.message}` });
   }
 });
 
@@ -143,11 +143,11 @@ router.put("/:cid", async (req, res) => {
   }
 
   if (!cid) {
-    return res.status(300).json({ error: "Cart ID is missing" });
+    return res.status(400).json({ error: "Cart ID is missing" });
   }
 
   if (!toUpdate.product || !toUpdate.quantity) {
-    return res.status(300).json({ error: "Invalid Cart" });
+    return res.status(400).json({ error: "Invalid Cart" });
   }
 
   try {
