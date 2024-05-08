@@ -17,7 +17,6 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     await cartManager.createCart();
-    let carts = await cartManager.getCarts();
     res.json({
       payload: `Cart created!`,
     });
