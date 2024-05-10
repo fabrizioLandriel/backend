@@ -61,7 +61,7 @@ router.post("/login", async (req, res) => {
   req.session.user = user;
 
   if (web) {
-    res.redirect("/profile");
+    res.redirect("/products");
   } else {
     return res.json({ payload: "Successfull login" });
   }
