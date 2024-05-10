@@ -14,3 +14,8 @@ const addToCart = async (pid) => {
     }).showToast();
   }
 };
+
+const logout = async () => {
+  await fetch("http://localhost:8081/api/sessions/logout", { method: "get" });
+  window.location.href = "/login";
+};

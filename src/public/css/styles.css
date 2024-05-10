@@ -6,6 +6,14 @@ nav {
   align-items: center;
   gap: 20px;
 }
+
+.userContainer {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+
 ul {
   display: flex;
   gap: 30px;
@@ -167,4 +175,105 @@ input {
 .pagination button:hover {
   background-color: #007bff;
   color: white;
+}
+
+/* Login */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #192229;
+}
+.login-form {
+  max-width: 400px;
+  padding: 40px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+.login-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+.error-message {
+  font-weight: bold;
+  color: red;
+  margin-bottom: 15px;
+}
+.register-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+.register-link a {
+  font-weight: bold;
+}
+
+/* Register */
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #192229;
+}
+.register-form {
+  max-width: 400px;
+  padding: 40px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+.register-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+.login-link {
+  display: block;
+  text-align: center;
+  margin-top: 20px;
+}
+.login-link a {
+  font-weight: bold;
+}
+
+/* Profile */
+.all-profile {
+  background-color: #192229;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+.profile-container {
+  margin-top: 20px;
+  width: 600px;
+  height: 450px;
+  padding: 40px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+}
+.profile-title {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #333;
+}
+.profile-info {
+  margin-bottom: 20px;
+}
+.profile-info label {
+  font-weight: bold;
+}
+.profile-info p {
+  margin-top: 5px;
+}
+.profile-action {
+  text-align: center;
+}
+.logout-btn {
+  margin-top: 20px;
 }
