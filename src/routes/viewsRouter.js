@@ -33,7 +33,7 @@ router.get("/products", auth, async (req, res) => {
   });
 });
 
-router.get("/realTimeProducts", async (req, res) => {
+router.get("/realTimeProducts", auth, async (req, res) => {
   let { payload: products } = await productManager.getProducts();
   let user = req.session.user;
   res.status(200).render("realTimeProducts", { products, user });
@@ -43,7 +43,7 @@ router.get("/chat", (req, res) => {
   res.status(200).render("chat");
 });
 
-router.get("/carts/:cid", async (req, res) => {
+router.get("/carts/:cid", auth, async (req, res) => {
   let user = req.session.user;
   let cid = req.params.cid;
   let cart = await cartManager.getCartById(cid);
@@ -60,7 +60,7 @@ router.get("/login", (req, res) => {
   res.render("login", { error });
 });
 
-router.get("/profile", (req, res) => {
+router.get("/profile", auth, (req, res) => {
   let user = req.session.user;
   res.render("profile", { user });
 });
