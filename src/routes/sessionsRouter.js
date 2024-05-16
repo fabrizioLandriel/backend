@@ -1,36 +1,24 @@
 import { Router } from "express";
 import { UserManager } from "../dao/UserManagerDB.js";
-import { createHash, validatePassword } from "../utils.js";
+import { validatePassword } from "../utils.js";
+import passport from "passport";
 
 export const router = Router();
 const userManager = new UserManager();
 
-router.post("/register", async (req, res) => {
-  let { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: "Please complete all fields" });
-  }
-  try {
-    let exist = await userManager.getUserBy({ email });
-    if (exist) {
-      return res.status(400).json({ error: `${email} is already registered` });
-    }
-  } catch (error) {
-    res.status(500).json({ error: "Unexpected server error" });
-  }
-
-  try {
-    let newUser = await userManager.createUser({
-      name,
-      email,
-      password: createHash(password),
-      rol: "user",
-    });
-    return res.json({ payload: "Successful registration", newUser });
-  } catch (error) {
-    return res.status(500).json({ error: "Unexpected server error" });
-  }
+router.get("/error", (req, res) => {
+  return res.status(500).json({ error: "Authentication error" });
 });
+
+router.post(
+  "/register",
+  passport.authenticate("register", { failureRedirect: "/api/sessions/error" }),
+  async (req, res) => {
+    return res
+      .status(201)
+      .json({ payload: "Successful registration", newUser: req.user });
+  }
+);
 
 router.post("/login", async (req, res) => {
   let { email, password, web } = req.body;

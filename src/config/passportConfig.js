@@ -19,7 +19,7 @@ export const initPassport = () => {
           if (!name) {
             return done(null, false);
           }
-          let exist = await userManager.getUserBy({ email });
+          let exist = await userManager.getUserBy({ email: username });
           if (exist) {
             return done(null, false);
           }
