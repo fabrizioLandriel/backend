@@ -26,6 +26,13 @@ export default class ProductManager {
   }
 
   async getProducts(limit = 10, page = 1, price, query) {
+    if (price) {
+      if (price == "asc") {
+        price = 1;
+      } else if (price == "desc") {
+        price = -1;
+      }
+    }
     let options = {
       limit,
       page,
