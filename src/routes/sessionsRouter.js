@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { UserManager } from "../dao/UserManagerDB.js";
-import { passwordHash } from "../utils.js";
+import { createHash, validatePassword } from "../utils.js";
 
 export const router = Router();
 const userManager = new UserManager();
@@ -23,7 +23,7 @@ router.post("/register", async (req, res) => {
     let newUser = await userManager.createUser({
       name,
       email,
-      password: passwordHash(password),
+      password: createHash(password),
       rol: "user",
     });
     return res.json({ payload: "Successful registration", newUser });
@@ -42,20 +42,25 @@ router.post("/login", async (req, res) => {
     }
   }
 
-  let user = await userManager.getUserBy({
-    email,
-    password: passwordHash(password),
-  });
+  let user = await userManager.getUserBy({ email });
   if (email == "adminCoder@coder.com" && password == "adminCod3r123") {
     user = { name: "admin", email, rol: "admin" };
   }
 
   if (!user) {
     if (web) {
-      return res.status(400).redirect("/login?error=invalid credentials");
+      return res.redirect("/login?error=invalid credentials");
+    } else {
+      return res.status(400).json({ error: "Invalid credentials" });
     }
   }
-
+  if (!validatePassword(password, user)) {
+    if (web) {
+      return res.redirect("/login?error=invalid credentials");
+    } else {
+      return res.status(400).json({ error: "Invalid credentials" });
+    }
+  }
   user = { ...user };
   delete user.password;
   req.session.user = user;

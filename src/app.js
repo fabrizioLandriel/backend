@@ -10,6 +10,7 @@ import { router as sessionsRouter } from "./routes/sessionsRouter.js";
 import mongoose from "mongoose";
 import sessions from "express-session";
 import { messagesModel } from "./dao/models/messagesModel.js";
+import MongoStore from "connect-mongo";
 
 const PORT = 8081;
 
@@ -26,6 +27,12 @@ app.use(
     secret: "CoderCoder",
     resave: true,
     saveUninitialized: true,
+    store: MongoStore.create({
+      ttl: 3600,
+      mongoUrl:
+        "mongodb+srv://VictorMolinaDev:RZWqwmlecNKIu8AE@clustercoder.pdrvouq.mongodb.net/?retryWrites=true&w=majority&appName=ClusterCoder",
+      dbName: "Ecommerce",
+    }),
   })
 );
 app.use(express.static(path.join(__dirname, "/public")));
