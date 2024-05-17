@@ -21,35 +21,8 @@ router.post(
 );
 
 router.post("/login", async (req, res) => {
-  let { email, password, web } = req.body;
-  if (!email || !password) {
-    if (web) {
-      return res.redirect(`/login?error=Please complete all fields`);
-    } else {
-      return res.status(400).json({ error: "Please complete all fields" });
-    }
-  }
-
-  let user = await userManager.getUserBy({ email });
-  if (email == "adminCoder@coder.com" && password == "adminCod3r123") {
-    user = { name: "admin", email, rol: "admin" };
-  }
-
-  if (!user) {
-    if (web) {
-      return res.redirect("/login?error=invalid credentials");
-    } else {
-      return res.status(400).json({ error: "Invalid credentials" });
-    }
-  }
-  if (!validatePassword(password, user)) {
-    if (web) {
-      return res.redirect("/login?error=invalid credentials");
-    } else {
-      return res.status(400).json({ error: "Invalid credentials" });
-    }
-  }
-  user = { ...user };
+  let { web } = req.body;
+  let user = { ...req.user };
   delete user.password;
   req.session.user = user;
 
@@ -67,5 +40,5 @@ router.get("/logout", (req, res) => {
       return res.status(500).json({ error: "Unexpected server error" });
     }
   });
-  return res.json({ payload: "logout successfull" });
+  res.json({ payload: "logout successfull" });
 });

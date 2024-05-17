@@ -1,7 +1,7 @@
 import passport from "passport";
 import local from "passport-local";
 import { UserManager } from "../dao/UserManagerDB.js";
-import { createHash } from "../utils.js";
+import { createHash, validatePassword } from "../utils.js";
 
 const userManager = new UserManager();
 
@@ -32,6 +32,30 @@ export const initPassport = () => {
           return done(null, newUser);
         } catch (error) {
           return done(error);
+        }
+      }
+    )
+  );
+
+  passport.use(
+    "login",
+    new local.Strategy(
+      { usernameField: "email" },
+      async (username, password, done) => {
+        try {
+          let user = await userManager.getUserBy({ email: username });
+          if (email == "adminCoder@coder.com" && password == "adminCod3r123") {
+            user = { name: "admin", email: username, rol: "admin" };
+          }
+          if (!user) {
+            return done(null, false);
+          }
+          if (!validatePassword(password, user)) {
+            return done(null, false);
+          }
+          return done(null, user);
+        } catch (error) {
+          done(error);
         }
       }
     )
