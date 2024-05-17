@@ -74,5 +74,5 @@ router.get("/logout", (req, res) => {
       return res.status(500).json({ error: "Unexpected server error" });
     }
   });
-  return res.json({ payload: "logout successfull" });
+  res.json({ payload: "logout successfull" });
 });
