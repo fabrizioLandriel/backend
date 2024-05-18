@@ -6,7 +6,9 @@ import { auth } from "../middlewares/auth.js";
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
-router.get("/", auth, (req, res) => {});
+router.get("/", auth, (req, res) => {
+  res.redirect("/products");
+});
 router.get("/products", auth, async (req, res) => {
   let { limit, sort, page, ...filters } = req.query;
   let user = req.session.user;

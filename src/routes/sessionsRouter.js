@@ -1,10 +1,6 @@
 import { Router } from "express";
-import { UserManager } from "../dao/UserManagerDB.js";
-import { validatePassword } from "../utils.js";
 import passport from "passport";
-
 export const router = Router();
-const userManager = new UserManager();
 
 router.get("/error", (req, res) => {
   return res.status(500).json({ error: "Authentication error" });
@@ -20,18 +16,34 @@ router.post(
   }
 );
 
-router.post("/login", async (req, res) => {
-  let { web } = req.body;
-  let user = { ...req.user };
-  delete user.password;
-  req.session.user = user;
+router.post(
+  "/login",
+  passport.authenticate("login", { failureRedirect: "/api/sessions/error" }),
+  async (req, res) => {
+    let { web } = req.body;
+    let user = { ...req.user };
+    delete user.password;
+    req.session.user = user;
 
-  if (web) {
-    res.redirect("/products");
-  } else {
-    return res.json({ payload: "Successfull login" });
+    if (web) {
+      res.redirect("/products");
+    } else {
+      return res.json({ payload: "Successfull login" });
+    }
   }
-});
+);
+
+router.get("/github", passport.authenticate("github", {}), (req, res) => {});
+router.get(
+  "/githubCallback",
+  passport.authenticate("github", {
+    failureRedirect: "/api/sessions/error",
+  }),
+  (req, res) => {
+    req.session.user = req.user;
+    return res.redirect("/");
+  }
+);
 
 router.get("/logout", (req, res) => {
   req.session.destroy((error) => {

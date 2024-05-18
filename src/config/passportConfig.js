@@ -1,5 +1,6 @@
 import passport from "passport";
 import local from "passport-local";
+import github from "passport-github2";
 import { UserManager } from "../dao/UserManagerDB.js";
 import { createHash, validatePassword } from "../utils.js";
 
@@ -44,11 +45,14 @@ export const initPassport = () => {
       async (username, password, done) => {
         try {
           let user = await userManager.getUserBy({ email: username });
-          if (email == "adminCoder@coder.com" && password == "adminCod3r123") {
-            user = { name: "admin", email: username, rol: "admin" };
-          }
           if (!user) {
             return done(null, false);
+          }
+          if (
+            username == "adminCoder@coder.com" &&
+            password == "adminCod3r123"
+          ) {
+            user = { name: "admin", email: username, rol: "admin" };
           }
           if (!validatePassword(password, user)) {
             return done(null, false);
@@ -56,6 +60,38 @@ export const initPassport = () => {
           return done(null, user);
         } catch (error) {
           done(error);
+        }
+      }
+    )
+  );
+
+  passport.use(
+    "github",
+    new github.Strategy(
+      {
+        clientID: "Iv23lij05XSe9H8L1IEO",
+        clientSecret: "74f5a09f80a5c96b3ce9bc7992bc85fb83d82783",
+        callbackURL: "http://localhost:8081/api/sessions/githubCallback",
+      },
+      async (tokenAcceso, tokenRefresh, profile, done) => {
+        try {
+          let email = profile._json.email;
+          let name = profile._json.name;
+          if (!name || !email) {
+            return done(null, false);
+          }
+          let user = await userManager.getUserBy({ email });
+          if (!user) {
+            user = await userManager.createUser({
+              name,
+              email,
+              rol: "user",
+              profile,
+            });
+          }
+          return done(null, user);
+        } catch (error) {
+          return done(error);
         }
       }
     )

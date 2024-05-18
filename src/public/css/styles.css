@@ -210,6 +210,40 @@ input {
 .register-link a {
   font-weight: bold;
 }
+.login-btn,
+.github-link {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.login-btn,
+.github-link {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.github-link {
+  background-color: #333;
+  color: #fff;
+}
+
+.github-link i {
+  margin-right: 8px;
+}
+
+.github-link:hover {
+  background-color: #444;
+}
 
 /* Register */
 
