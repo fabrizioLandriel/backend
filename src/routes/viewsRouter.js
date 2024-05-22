@@ -6,10 +6,13 @@ import { auth } from "../middlewares/auth.js";
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
-router.get("/", auth, (req, res) => {});
+router.get("/", auth, (req, res) => {
+  res.redirect("/products");
+});
 router.get("/products", auth, async (req, res) => {
   let { limit, sort, page, ...filters } = req.query;
   let user = req.session.user;
+  let cart = { _id: req.session.user.cart };
   let {
     payload: products,
     totalPages,
@@ -31,13 +34,15 @@ router.get("/products", auth, async (req, res) => {
     prevLink,
     nextLink,
     user,
+    cart,
   });
 });
 
 router.get("/realTimeProducts", auth, async (req, res) => {
   let { payload: products } = await productManager.getProducts();
   let user = req.session.user;
-  res.status(200).render("realTimeProducts", { products, user });
+  let cart = { _id: req.session.user.cart };
+  res.status(200).render("realTimeProducts", { products, user, cart });
 });
 
 router.get("/chat", (req, res) => {
@@ -47,10 +52,11 @@ router.get("/chat", (req, res) => {
 router.get("/carts/:cid", auth, async (req, res) => {
   let user = req.session.user;
   let cid = req.params.cid;
-  let cart = await cartManager.getCartById(cid);
-  cart = cart.products.map((c) => c.toJSON());
+  let cart = { _id: req.session.user.cart };
+  let userCart = await cartManager.getCartById(cid);
+  userCart = userCart.products.map((c) => c.toJSON());
 
-  res.status(200).render("carts", { cart, user });
+  res.status(200).render("carts", { cart, user, userCart });
 });
 
 router.get("/register", (req, res) => {

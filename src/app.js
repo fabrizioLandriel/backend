@@ -10,14 +10,13 @@ import { router as sessionsRouter } from "./routes/sessionsRouter.js";
 import mongoose from "mongoose";
 import sessions from "express-session";
 import { messagesModel } from "./dao/models/messagesModel.js";
+import MongoStore from "connect-mongo";
+import { initPassport } from "./config/passportConfig.js";
+import passport from "passport";
 
 const PORT = 8081;
 
 const app = express();
-
-app.engine("handlebars", engine());
-app.set("view engine", "handlebars");
-app.set("views", path.join(__dirname, "/views"));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -26,8 +25,22 @@ app.use(
     secret: "CoderCoder",
     resave: true,
     saveUninitialized: true,
+    store: MongoStore.create({
+      ttl: 3600,
+      mongoUrl:
+        "mongodb+srv://VictorMolinaDev:RZWqwmlecNKIu8AE@clustercoder.pdrvouq.mongodb.net/?retryWrites=true&w=majority&appName=ClusterCoder",
+      dbName: "Ecommerce",
+    }),
   })
 );
+
+initPassport();
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.engine("handlebars", engine());
+app.set("view engine", "handlebars");
+app.set("views", path.join(__dirname, "/views"));
 app.use(express.static(path.join(__dirname, "/public")));
 
 app.use("/api/products", productRouter);
