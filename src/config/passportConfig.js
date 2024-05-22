@@ -3,8 +3,9 @@ import local from "passport-local";
 import github from "passport-github2";
 import { UserManager } from "../dao/UserManagerDB.js";
 import { createHash, validatePassword } from "../utils.js";
-
+import CartManager from "../dao/CartManagerDB.js";
 const userManager = new UserManager();
+const cartManager = new CartManager();
 
 export const initPassport = () => {
   passport.use(
@@ -24,11 +25,13 @@ export const initPassport = () => {
           if (exist) {
             return done(null, false);
           }
+          let newCart = await cartManager.createCart();
           let newUser = await userManager.createUser({
             name,
             email: username,
             password: createHash(password),
             rol: "user",
+            cart: newCart._id,
           });
           return done(null, newUser);
         } catch (error) {
@@ -69,8 +72,8 @@ export const initPassport = () => {
     "github",
     new github.Strategy(
       {
-        clientID: "",
-        clientSecret: "",
+        clientID: "Iv23lij05XSe9H8L1IEO",
+        clientSecret: "74f5a09f80a5c96b3ce9bc7992bc85fb83d82783",
         callbackURL: "http://localhost:8081/api/sessions/githubCallback",
       },
       async (tokenAcceso, tokenRefresh, profile, done) => {
@@ -82,10 +85,12 @@ export const initPassport = () => {
           }
           let user = await userManager.getUserBy({ email });
           if (!user) {
+            let newCart = await cartManager.createCart();
             user = await userManager.createUser({
               name,
               email,
               rol: "user",
+              cart: newCart._id,
               profile,
             });
           }

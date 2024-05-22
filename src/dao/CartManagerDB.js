@@ -4,7 +4,7 @@ const productManager = new ProductManager();
 
 export default class CartManager {
   async createCart() {
-    await cartsModel.create({ products: [] });
+    return await cartsModel.create({ products: [] });
   }
 
   async getCarts() {
