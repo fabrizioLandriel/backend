@@ -49,7 +49,7 @@ app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
 
 const server = app.listen(PORT, () =>
-  console.log(`Server online en puerto:${PORT}`)
+  console.log(`Server listening in port:${PORT}`)
 );
 
 export const io = new Server(server);
