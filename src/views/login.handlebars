@@ -3,6 +3,7 @@
     <h2 class="login-title">Login</h2>
     <div class="error-message">{{error.error}}</div>
     <form action="/api/sessions/login" method="post">
+      <input type="text" name="web" value="web" hidden />
       <div class="mb-3">
         <input
           type="email"
@@ -21,7 +22,6 @@
           required
         />
       </div>
-      <input type="text" name="web" value="web" hidden />
       <div class="mb-3">
         <button
           type="submit"

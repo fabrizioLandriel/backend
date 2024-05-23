@@ -1,32 +1,41 @@
-/* home */
-nav {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
+/* Navbar */
+.navbar-custom {
+  background-color: #007bff;
+  height: 80px;
 }
-
+.navbar-custom h1 {
+  color: #ffffff;
+  font-size: 25px;
+}
+.navbar-nav {
+  flex-direction: row;
+  gap: 30px;
+}
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link,
+.navbar-custom .navbar-text {
+  color: white;
+}
+.navbar-custom .nav-link:hover {
+  color: #cccccc;
+}
+.navbar-custom .btn-primary {
+  background-color: #ffffff;
+  border: none;
+  color: #007bff;
+}
+.navbar-custom .btn-primary:hover {
+  background-color: #cccccc;
+  color: #007bff;
+}
 .userContainer {
   display: flex;
-  gap: 10px;
-  justify-content: center;
   align-items: center;
+  gap: 15px;
 }
 
-ul {
-  display: flex;
-  gap: 30px;
-  list-style-type: none;
-}
+/* home */
 
-a {
-  text-decoration: none;
-}
-
-h1 {
-  margin-top: 10px;
-}
 .cardEcommerce {
   margin-top: 50px;
   margin-left: 100px;
@@ -68,19 +77,28 @@ h1 {
 
 /* real time products */
 table {
-  width: auto;
-  background-color: #212e36;
-  color: aliceblue;
-  height: 10px;
   width: 100%;
 }
-tr,
+
 th,
 td {
   text-align: center;
-  padding: 10px;
-  width: 100px;
-  border: 1px solid whitesmoke;
+  padding: 8px;
+}
+
+th {
+  background-color: #212e36;
+  color: aliceblue;
+  border: 1px solid #dee2e6;
+}
+
+td {
+  border: 1px solid #dee2e6;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  margin-top: 10px;
 }
 
 /* chat */
@@ -277,15 +295,15 @@ input {
 
 /* Profile */
 .all-profile {
-  background-color: #192229;
-  height: 100vh;
+  height: 91vh;
   display: flex;
+  background-color: aliceblue;
   justify-content: center;
 }
 .profile-container {
   margin-top: 20px;
   width: 600px;
-  height: 450px;
+  height: max-content;
   padding: 40px;
   border-radius: 10px;
   background-color: #fff;
@@ -312,18 +330,57 @@ input {
   margin-top: 20px;
 }
 
-/* CARD */
+/* CART */
+#mainCarrito {
+  background-color: aliceblue;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 91vh;
+  padding: 0 15px;
+}
+
+.cardsContainer {
+  width: 100%;
+  background-color: #e8e8e8;
+  overflow-y: auto;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  margin-top: 10px;
+  padding: 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#cards {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.cardCarrito {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  display: flex;
+  width: 90%;
+  max-width: 700px;
+  margin-bottom: 15px;
+}
+
 .cardCart {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
 }
 
 .colCart {
+  display: flex;
+  justify-content: center;
   align-items: center;
-  align-content: center;
 }
 
 .imgCart {
@@ -332,15 +389,10 @@ input {
   height: 100%;
 }
 
-.cardCarrito {
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  display: flex;
-}
-
 .btnEliminar {
   display: flex;
-  justify-content: right;
-  margin-top: 10px; /* Ajuste para separar el botón del contenido */
+  justify-content: flex-end;
+  margin-top: 10px;
 }
 
 .btn-danger {
@@ -357,8 +409,6 @@ input {
 
 .resumenPedido {
   width: 100%;
-  height: 90%;
-  margin-left: 10px;
   margin-top: 20px;
   display: flex;
   flex-direction: column;
@@ -366,35 +416,10 @@ input {
   align-items: center;
   text-align: center;
 }
-#mainCarrito {
-  background-color: aliceblue;
-  margin-top: 15px;
-  display: flex;
-  width: 100%;
-  height: 100vh;
-}
+
 #btnf {
   width: 200px;
   height: 60px;
   margin-bottom: 20px;
   margin-top: 20px;
-}
-
-#cards {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  height: auto;
-}
-
-.cardsContainer {
-  width: 100%;
-  height: 840px;
-  background-color: #e8e8e8;
-  overflow-y: auto;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  margin-top: 10px;
-  margin-left: 10px;
 }

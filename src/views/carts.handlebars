@@ -1,10 +1,10 @@
 {{>navbar}}
-<main id="mainCarrito">
-  <article id="products" class="cardsContainer">
-    <section id="cards">
+<main id="mainCarrito" class="container-fluid d-flex flex-row align-items-center">
+  <article id="products" class="cardsContainer flex-grow-1 w-100">
+    <section id="cards" class="h-100 w-100 d-flex flex-column align-items-center">
       <input type="text" value="{{user.cart}}" id="cart" hidden>
       {{#each userCart}}
-        <div class="card mb-3 cardCarrito" style="width: 700px;">
+        <div class="card mb-3 cardCarrito">
           <div class="row g-0">
             <div class="col-md-4 colCart">
               <img src="{{product.image}}" class="img-fluid imgCart rounded-start" alt="{{product.description}}">
@@ -27,7 +27,7 @@
       {{/each}}
     </section>
   </article>
-  <section class="resumenPedido">
+  <section class="resumenPedido w-100">
     <div class="mascosas">
       <h2 class="fw-bold">Resumen de su pedido:</h2>
       <p id="precioTotal">El precio total es de:</p>

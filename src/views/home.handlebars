@@ -28,24 +28,23 @@
     
   </article>
 <div class="pagination">
-
     {{#if hasPrevPage}}
         <a href={{prevLink}}><button>Ant</button></a>
         {{else}}
         <button disabled>Ant</button>
     {{/if}}
 
-      <strong>Page: {{page}}</strong>
+      <strong> pagina:{{page}}</strong>
 
     {{#if hasNextPage}}
         <a href={{nextLink}}><button>Sig</button></a>
         {{else}}
-        <button disabled>Sig</button>
+        <button disabled class="disabled">Sig</button>
     {{/if}}
 
+</div>
+
+
 </main>
-<script
-  type="text/javascript"
-  src="https://cdn.jsdelivr.net/npm/toastify-js"
-></script>
+<script  type="text/javascript"src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="/js/cart.js"></script>

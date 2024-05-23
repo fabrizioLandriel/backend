@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import __dirname from "./utils.js";
+import __dirname, { SECRET } from "./utils.js";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import { router as viewsRouter } from "./routes/viewsRouter.js";
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   sessions({
-    secret: "CoderCoder",
+    secret: SECRET,
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({

@@ -11,3 +11,5 @@ export const createHash = (password) =>
 
 export const validatePassword = (password, user) =>
   bcrypt.compareSync(password, user.password);
+
+export const SECRET = "CoderCoder123";

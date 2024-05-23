@@ -17,8 +17,8 @@ export const initPassport = () => {
       },
       async (req, username, password, done) => {
         try {
-          let { name } = req.body;
-          if (!name) {
+          let { first_name, last_name, age } = req.body;
+          if (!first_name || !last_name || !age) {
             return done(null, false);
           }
           let exist = await userManager.getUserBy({ email: username });
@@ -27,10 +27,11 @@ export const initPassport = () => {
           }
           let newCart = await cartManager.createCart();
           let newUser = await userManager.createUser({
-            name,
+            first_name,
+            last_name,
             email: username,
+            age: Number(age),
             password: createHash(password),
-            rol: "user",
             cart: newCart._id,
           });
           return done(null, newUser);
@@ -55,7 +56,7 @@ export const initPassport = () => {
             username == "adminCoder@coder.com" &&
             password == "adminCod3r123"
           ) {
-            user = { name: "admin", email: username, rol: "admin" };
+            user = { first_name: "admin", email: username, rol: "admin" };
           }
           if (!validatePassword(password, user)) {
             return done(null, false);
@@ -72,8 +73,8 @@ export const initPassport = () => {
     "github",
     new github.Strategy(
       {
-        clientID: "",
-        clientSecret: "",
+        clientID: "Iv23lij05XSe9H8L1IEO",
+        clientSecret: "74f5a09f80a5c96b3ce9bc7992bc85fb83d82783",
         callbackURL: "http://localhost:8081/api/sessions/githubCallback",
       },
       async (tokenAcceso, tokenRefresh, profile, done) => {
@@ -85,11 +86,13 @@ export const initPassport = () => {
           }
           let user = await userManager.getUserBy({ email });
           if (!user) {
+            let first_name = name.split(" ")[0];
+            let last_name = name.split(" ")[1];
             let newCart = await cartManager.createCart();
             user = await userManager.createUser({
-              name,
+              first_name,
+              last_name,
               email,
-              rol: "user",
               cart: newCart._id,
               profile,
             });

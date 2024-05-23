@@ -25,7 +25,7 @@ export default class ProductManager {
     await productsModel.create(productAdded);
   }
 
-  async getProducts(limit = 10, page = 1, price, query) {
+  async getProducts(limit, page, price, query) {
     if (price) {
       if (price == "asc") {
         price = 1;
@@ -74,6 +74,10 @@ export default class ProductManager {
         message: error.message,
       };
     }
+  }
+
+  async getAllProducts() {
+    return await productsModel.find().lean();
   }
 
   async getProductsBy(filtro) {

@@ -26,7 +26,8 @@ router.post(
     req.session.user = user;
 
     if (web) {
-      res.redirect("/products");
+      console.log(web);
+      res.redirect("/");
     } else {
       return res.json({ payload: "Successfull login" });
     }
@@ -44,6 +45,13 @@ router.get(
     return res.redirect("/");
   }
 );
+
+router.get("/current", (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: "User does not exist" });
+  }
+  return res.json({ currentUser: req.session.user });
+});
 
 router.get("/logout", (req, res) => {
   req.session.destroy((error) => {
