@@ -56,7 +56,7 @@ export const initPassport = () => {
             username == "adminCoder@coder.com" &&
             password == "adminCod3r123"
           ) {
-            user = { first_name: "admin", email: username, rol: "admin" };
+            user = { first_name: "admin", email: username, role: "admin" };
           }
           if (!validatePassword(password, user)) {
             return done(null, false);
@@ -73,8 +73,8 @@ export const initPassport = () => {
     "github",
     new github.Strategy(
       {
-        clientID: "",
-        clientSecret: "",
+        clientID: "Iv23lij05XSe9H8L1IEO",
+        clientSecret: "74f5a09f80a5c96b3ce9bc7992bc85fb83d82783",
         callbackURL: "http://localhost:8081/api/sessions/githubCallback",
       },
       async (tokenAcceso, tokenRefresh, profile, done) => {
