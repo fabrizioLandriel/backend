@@ -19,11 +19,13 @@ export const initPassport = () => {
         try {
           let { first_name, last_name, age } = req.body;
           if (!first_name || !last_name || !age) {
-            return done(null, false);
+            return done(null, false, { message: "Unfilled fields" });
           }
           let exist = await userManager.getUserBy({ email: username });
           if (exist) {
-            return done(null, false);
+            return done(null, false, {
+              message: `${username} is already registered `,
+            });
           }
           let newCart = await cartManager.createCart();
           let newUser = await userManager.createUser({
@@ -50,16 +52,10 @@ export const initPassport = () => {
         try {
           let user = await userManager.getUserBy({ email: username });
           if (!user) {
-            return done(null, false);
-          }
-          if (
-            username == "adminCoder@coder.com" &&
-            password == "adminCod3r123"
-          ) {
-            user = { first_name: "admin", email: username, role: "admin" };
+            return done(null, false, { message: "User not found" });
           }
           if (!validatePassword(password, user)) {
-            return done(null, false);
+            return done(null, false, { message: "Invalid password" });
           }
           return done(null, user);
         } catch (error) {
@@ -82,7 +78,7 @@ export const initPassport = () => {
           let email = profile._json.email;
           let name = profile._json.name;
           if (!name || !email) {
-            return done(null, false);
+            return done(null, false, { message: "Email or name is missing" });
           }
           let user = await userManager.getUserBy({ email });
           if (!user) {

@@ -6,10 +6,10 @@ import { auth } from "../middlewares/auth.js";
 const productManager = new ProductManager();
 const cartManager = new CartManager();
 
-router.get("/", auth, (req, res) => {
+router.get("/", auth(["user"]), (req, res) => {
   res.redirect("/products");
 });
-router.get("/products", auth, async (req, res) => {
+router.get("/products", auth(["admin", "user"]), async (req, res) => {
   let { limit = 10, sort, page = 1, ...filters } = req.query;
   let user = req.session.user;
   let cart = { _id: req.session.user.cart };
@@ -38,7 +38,7 @@ router.get("/products", auth, async (req, res) => {
   });
 });
 
-router.get("/realTimeProducts", auth, async (req, res) => {
+router.get("/realTimeProducts", auth(["admin", "user"]), async (req, res) => {
   let products = await productManager.getAllProducts();
   let user = req.session.user;
   let cart = { _id: req.session.user.cart };
@@ -49,7 +49,7 @@ router.get("/chat", (req, res) => {
   res.status(200).render("chat");
 });
 
-router.get("/carts/:cid", auth, async (req, res) => {
+router.get("/carts/:cid", auth(["admin", "user"]), async (req, res) => {
   let user = req.session.user;
   let cid = req.params.cid;
   let cart = { _id: req.session.user.cart };
@@ -59,15 +59,15 @@ router.get("/carts/:cid", auth, async (req, res) => {
   res.status(200).render("carts", { cart, user, userCart });
 });
 
-router.get("/register", (req, res) => {
+router.get("/register", auth(["public"]), (req, res) => {
   res.render("register");
 });
-router.get("/login", (req, res) => {
+router.get("/login", auth(["public"]), (req, res) => {
   let error = req.query;
   res.render("login", { error });
 });
 
-router.get("/profile", auth, (req, res) => {
+router.get("/profile", auth(["admin", "user"]), (req, res) => {
   let user = req.session.user;
   let cart = { _id: req.session.user.cart };
   res.render("profile", { user, cart });
