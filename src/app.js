@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import __dirname, { SECRET } from "./utils.js";
+import __dirname from "./utils.js";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import { router as viewsRouter } from "./routes/viewsRouter.js";
@@ -13,8 +13,9 @@ import { messagesModel } from "./dao/models/messagesModel.js";
 import MongoStore from "connect-mongo";
 import { initPassport } from "./config/passportConfig.js";
 import passport from "passport";
+import { config } from "./config/config.js";
 
-const PORT = 8081;
+const PORT = config.PORT;
 
 const app = express();
 
@@ -22,14 +23,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   sessions({
-    secret: SECRET,
+    secret: config.SECRET,
     resave: true,
     saveUninitialized: true,
     store: MongoStore.create({
       ttl: 3600,
-      mongoUrl:
-        "mongodb+srv://VictorMolinaDev:RZWqwmlecNKIu8AE@clustercoder.pdrvouq.mongodb.net/?retryWrites=true&w=majority&appName=ClusterCoder",
-      dbName: "Ecommerce",
+      mongoUrl: config.MONGO_URL,
+      dbName: config.DB_NAME,
     }),
   })
 );
@@ -70,12 +70,9 @@ io.on("connection", (socket) => {
 
 const connDB = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://VictorMolinaDev:RZWqwmlecNKIu8AE@clustercoder.pdrvouq.mongodb.net/?retryWrites=true&w=majority&appName=ClusterCoder",
-      {
-        dbName: "Ecommerce",
-      }
-    );
+    await mongoose.connect(config.MONGO_URL, {
+      dbName: config.DB_NAME,
+    });
     console.log("Mongoose online");
   } catch (error) {
     console.log("Error DB", error.message);

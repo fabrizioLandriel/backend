@@ -4,6 +4,7 @@ import github from "passport-github2";
 import { UserManager } from "../dao/UserManagerDB.js";
 import { createHash, validatePassword } from "../utils.js";
 import CartManager from "../dao/CartManagerDB.js";
+import { config } from "./config.js";
 const userManager = new UserManager();
 const cartManager = new CartManager();
 
@@ -69,8 +70,8 @@ export const initPassport = () => {
     "github",
     new github.Strategy(
       {
-        clientID: "",
-        clientSecret: "",
+        clientID: config.CLIENT_ID_GITHUB,
+        clientSecret: config.CLIENT_SECRET_GITHUB,
         callbackURL: "http://localhost:8081/api/sessions/githubCallback",
       },
       async (tokenAcceso, tokenRefresh, profile, done) => {
