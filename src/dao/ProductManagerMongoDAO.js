@@ -1,7 +1,6 @@
 import { productsModel } from "./models/productsModel.js";
-
-export default class ProductManager {
-  async addProducts({
+export default class ProductManagerMongoDAO {
+  async create({
     title,
     description,
     code,
@@ -25,7 +24,7 @@ export default class ProductManager {
     await productsModel.create(productAdded);
   }
 
-  async getProducts(limit, page, price, query) {
+  async getPaginate(limit = 10, page = 1, price, query) {
     if (price) {
       if (price == "asc") {
         price = 1;
@@ -50,8 +49,6 @@ export default class ProductManager {
         page,
         hasPrevPage,
         hasNextPage,
-        prevLink,
-        nextLink,
       } = await productsModel.paginate(filter, options);
 
       let paginationInfo = {
@@ -66,7 +63,6 @@ export default class ProductManager {
         prevLink: hasPrevPage ? `/products/?page=${prevPage}` : null,
         nextLink: hasNextPage ? `/products/?page=${nextPage}` : null,
       };
-
       return paginationInfo;
     } catch (error) {
       return {
@@ -76,23 +72,22 @@ export default class ProductManager {
     }
   }
 
-  async getAllProducts() {
+  async getAll() {
     return await productsModel.find().lean();
   }
 
-  async getProductsBy(filtro) {
+  async getBy(filtro) {
     return await productsModel.findOne(filtro);
   }
 
-  async updateProducts(id, productData) {
-    // ---> 'PRODUCTDATA' se pasa por el body de postman<---
+  async update(id, productData) {
     return await productsModel.findByIdAndUpdate(id, productData, {
       runValidators: true,
       returnDocument: "after",
     });
   }
 
-  async deleteProducts(productId) {
+  async delete(productId) {
     return await productsModel.deleteOne({ _id: productId });
   }
 }

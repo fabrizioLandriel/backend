@@ -1,27 +1,27 @@
 import { cartsModel } from "./models/cartsModel.js";
-import ProductManager from "./ProductManagerDB.js";
-const productManager = new ProductManager();
+import ProductManagerMongoDAO from "./ProductManagerMongoDAO.js";
+const productManager = new ProductManagerMongoDAO();
 
-export default class CartManager {
-  async createCart() {
+export default class CartManagerMongoDAO {
+  async create() {
     return await cartsModel.create({ products: [] });
   }
 
-  async getCarts() {
+  async get() {
     const carts = await cartsModel.find().populate("products.product");
     return carts;
   }
 
-  async getCartById(idCart) {
+  async getById(idCart) {
     const searchCart = await cartsModel
       .findOne({ _id: idCart })
       .populate("products.product");
     return searchCart;
   }
 
-  async addProducts(idCart, idProduct) {
+  async add(idCart, idProduct) {
     try {
-      let searchCart = await this.getCartById(idCart);
+      let searchCart = await this.getById(idCart);
       let isProductInCart = false;
       searchCart.products.forEach((p) => {
         let product = p.product;
@@ -33,7 +33,7 @@ export default class CartManager {
       });
 
       if (!isProductInCart) {
-        let producto = await productManager.getProductsBy({ _id: idProduct });
+        let producto = await productManager.getBy({ _id: idProduct });
         searchCart.products.push({ product: producto._id, quantity: 1 });
       }
 
@@ -43,9 +43,9 @@ export default class CartManager {
     }
   }
 
-  async deleteProduct(idCart, idProduct) {
+  async delete(idCart, idProduct) {
     try {
-      let searchCart = await this.getCartById(idCart);
+      let searchCart = await this.getById(idCart);
       searchCart.products = searchCart.products.filter(
         (p) => p.product._id != idProduct
       );
@@ -55,9 +55,9 @@ export default class CartManager {
     }
   }
 
-  async updateCartProducts(idCart, idProduct, quantityUpdate) {
+  async update(idCart, idProduct, quantityUpdate) {
     try {
-      let searchCart = await this.getCartById(idCart);
+      let searchCart = await this.getById(idCart);
       searchCart.products.forEach((p) => {
         let product = p.product;
 
@@ -71,9 +71,9 @@ export default class CartManager {
     }
   }
 
-  async deleteAllProducts(idCart) {
+  async deleteAll(idCart) {
     try {
-      let searchCart = await this.getCartById(idCart);
+      let searchCart = await this.getById(idCart);
 
       if (searchCart) {
         searchCart.products.splice(0, searchCart.products.length);
@@ -83,12 +83,12 @@ export default class CartManager {
       return `Error: product ${id} not found`;
     }
   }
-  async updateCart(idCart, toUpdate) {
+  async updateAll(idCart, toUpdate) {
     try {
-      let searchCart = await this.getCartById(idCart);
+      let searchCart = await this.getById(idCart);
 
       if (searchCart) {
-        await this.deleteAllProducts(idCart);
+        await this.deleteAll(idCart);
         searchCart.products.push(toUpdate);
       }
 

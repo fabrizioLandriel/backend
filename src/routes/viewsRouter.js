@@ -1,10 +1,10 @@
 import { Router } from "express";
 export const router = Router();
-import ProductManager from "../dao/ProductManagerDB.js";
-import CartManager from "../dao/CartManagerDB.js";
+import ProductManagerMongoDAO from "../dao/ProductManagerMongoDAO.js";
 import { auth } from "../middlewares/auth.js";
-const productManager = new ProductManager();
-const cartManager = new CartManager();
+import CartManagerMongoDAO from "../dao/CartManagerMongoDAO.js";
+const productManager = new ProductManagerMongoDAO();
+const cartManager = new CartManagerMongoDAO();
 
 router.get("/", auth(["admin", "user"]), (req, res) => {
   res.redirect("/products");
@@ -22,7 +22,7 @@ router.get("/products", auth(["admin", "user"]), async (req, res) => {
     hasNextPage,
     prevLink,
     nextLink,
-  } = await productManager.getProducts(limit, page, sort, filters);
+  } = await productManager.getPaginate(limit, page, sort, filters);
   res.status(200).render("home", {
     products,
     totalPages,
@@ -39,7 +39,7 @@ router.get("/products", auth(["admin", "user"]), async (req, res) => {
 });
 
 router.get("/realTimeProducts", auth(["admin", "user"]), async (req, res) => {
-  let products = await productManager.getAllProducts();
+  let products = await productManager.getAll();
   let user = req.session.user;
   let cart = { _id: req.session.user.cart };
   res.status(200).render("realTimeProducts", { products, user, cart });
@@ -53,7 +53,7 @@ router.get("/carts/:cid", auth(["admin", "user"]), async (req, res) => {
   let user = req.session.user;
   let cid = req.params.cid;
   let cart = { _id: req.session.user.cart };
-  let userCart = await cartManager.getCartById(cid);
+  let userCart = await cartManager.getById(cid);
   userCart = userCart.products.map((c) => c.toJSON());
 
   res.status(200).render("carts", { cart, user, userCart });

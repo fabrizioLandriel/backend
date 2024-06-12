@@ -30,9 +30,9 @@
     {{#if hasPrevPage}}
         <a href={{prevLink}}><button>Ant</button></a>
         {{else}}
-        <button disabled>Ant</button>
+        <button disabled class="disabled">Ant</button>
     {{/if}}
-        <p>Pagina:<strong>{{page}}</strong></p>
+        <p>Pagina: <strong>{{page}}</strong> de <strong>{{totalPages}}</strong></p>
     {{#if hasNextPage}}
         <a href={{nextLink}}><button>Sig</button></a>
         {{else}}

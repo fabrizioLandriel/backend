@@ -1,12 +1,12 @@
 import passport from "passport";
 import local from "passport-local";
 import github from "passport-github2";
-import { UserManager } from "../dao/UserManagerDB.js";
 import { createHash, validatePassword } from "../utils.js";
-import CartManager from "../dao/CartManagerDB.js";
 import { config } from "./config.js";
-const userManager = new UserManager();
-const cartManager = new CartManager();
+import CartManagerMongoDAO from "../dao/CartManagerMongoDAO.js";
+import { UserManagerMongoDAO } from "../dao/UserManagerMongoDAO.js";
+const userManager = new UserManagerMongoDAO();
+const cartManager = new CartManagerMongoDAO();
 
 export const initPassport = () => {
   passport.use(
@@ -22,14 +22,14 @@ export const initPassport = () => {
           if (!first_name || !last_name || !age) {
             return done(null, false, { message: "Unfilled fields" });
           }
-          let exist = await userManager.getUserBy({ email: username });
+          let exist = await userManager.getBy({ email: username });
           if (exist) {
             return done(null, false, {
               message: `${username} is already registered `,
             });
           }
-          let newCart = await cartManager.createCart();
-          let newUser = await userManager.createUser({
+          let newCart = await cartManager.create();
+          let newUser = await userManager.create({
             first_name,
             last_name,
             email: username,
@@ -51,7 +51,7 @@ export const initPassport = () => {
       { usernameField: "email" },
       async (username, password, done) => {
         try {
-          let user = await userManager.getUserBy({ email: username });
+          let user = await userManager.getBy({ email: username });
           if (!user) {
             return done(null, false, { message: "User not found" });
           }
@@ -81,12 +81,12 @@ export const initPassport = () => {
           if (!name || !email) {
             return done(null, false, { message: "Email or name is missing" });
           }
-          let user = await userManager.getUserBy({ email });
+          let user = await userManager.getBy({ email });
           if (!user) {
             let first_name = name.split(" ")[0];
             let last_name = name.split(" ")[1];
-            let newCart = await cartManager.createCart();
-            user = await userManager.createUser({
+            let newCart = await cartManager.create();
+            user = await userManager.create({
               first_name,
               last_name,
               email,
@@ -107,7 +107,7 @@ export const initPassport = () => {
   });
 
   passport.deserializeUser(async (id, done) => {
-    let user = await userManager.getUserBy({ _id: id });
+    let user = await userManager.getBy({ _id: id });
     return done(null, user);
   });
 };
