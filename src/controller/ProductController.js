@@ -1,13 +1,12 @@
 import { io } from "../app.js";
 import { isValidObjectId } from "mongoose";
-import ProductManagerMongoDAO from "../dao/ProductManagerMongoDAO.js";
-const productManager = new ProductManagerMongoDAO();
+import { productService } from "../services/ProductService.js";
 
 export class ProductController {
   static getProducts = async (req, res) => {
     try {
       let { limit, sort, page, ...filters } = req.query;
-      let products = await productManager.getPaginate(
+      let products = await productService.getProductsPaginate(
         limit,
         page,
         sort,
@@ -27,7 +26,7 @@ export class ProductController {
       });
     }
     try {
-      let product = await productManager.getBy({ _id: pid });
+      let product = await productService.getProductsBy({ _id: pid });
       if (product) {
         res.json({ product });
       } else {
@@ -54,7 +53,7 @@ export class ProductController {
 
     let exist;
     try {
-      exist = await productManager.getBy({ code });
+      exist = await productService.getProductsBy({ code });
     } catch (error) {
       return res.status(500).json({
         error: `${error.message}`,
@@ -68,7 +67,7 @@ export class ProductController {
     }
 
     try {
-      await productManager.addProducts({ ...req.body });
+      await productService.addProduct({ ...req.body });
       let productList = await productManager.getPaginate();
       io.emit("updateProducts", productList);
       return res.json({ payload: `Product added` });
@@ -94,7 +93,7 @@ export class ProductController {
     if (toUpdate.code) {
       let exist;
       try {
-        exist = await productManager.getBy({ code: toUpdate.code });
+        exist = await productService.getProductsBy({ code: toUpdate.code });
         if (exist) {
           return res.status(400).json({
             error: `There is already another product with the code ${toUpdate.code}`,
@@ -108,7 +107,7 @@ export class ProductController {
     }
 
     try {
-      const products = await productManager.update(pid, toUpdate);
+      const products = await productService.updateProduct(pid, toUpdate);
       return res.json(products);
     } catch (error) {
       res.status(300).json({ error: "Error when modifying the product" });
@@ -123,9 +122,9 @@ export class ProductController {
       });
     }
     try {
-      let products = await productManager.delete(pid);
+      let products = await productService.deleteProduct(pid);
       if (products.deletedCount > 0) {
-        let productList = await productManager.getPaginate();
+        let productList = await productService.getProductsPaginate();
         io.emit("deleteProducts", productList);
         return res.json({ payload: `Product ${pid} deleted` });
       } else {

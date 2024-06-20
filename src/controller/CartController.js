@@ -1,11 +1,12 @@
-import CartManagerMongoDAO from "../dao/CartManagerMongoDAO.js";
+import { cartService } from "../services/CartService.js";
 import { isValidObjectId } from "mongoose";
-const cartManager = new CartManagerMongoDAO();
+import { ticketService } from "../services/ticketService.js";
+import { sendTicket } from "../utils.js";
 
 export class CartController {
   static getAllCarts = async (req, res) => {
     try {
-      let getAllCarts = await cartManager.get();
+      let getAllCarts = await cartService.getAllCarts();
       return res.json({ getAllCarts });
     } catch (error) {
       res.status(500).json({ error: `error getting carts: ${error.message}` });
@@ -14,7 +15,7 @@ export class CartController {
 
   static createCart = async (req, res) => {
     try {
-      await cartManager.create();
+      await cartService.createCart();
       return res.json({
         payload: `Cart created!`,
       });
@@ -32,7 +33,7 @@ export class CartController {
     }
 
     try {
-      let cartById = await cartManager.getById(cid);
+      let cartById = await cartService.getCartById(cid);
       if (!cartById) {
         return res.status(300).json({ error: "Cart not found" });
       } else {
@@ -59,8 +60,8 @@ export class CartController {
     }
 
     try {
-      await cartManager.add(cid, pid);
-      let cartUpdated = await cartManager.getById(cid);
+      await cartService.addProductToCart(cid, pid);
+      let cartUpdated = await cartService.getCartById(cid);
       res.json({ payload: cartUpdated });
     } catch (error) {
       res
@@ -82,7 +83,7 @@ export class CartController {
     }
 
     try {
-      await cartManager.delete(cid, pid);
+      await cartService.deleteProductInCart(cid, pid);
       return res.json({ payload: `Product ${pid} deleted from cart ${cid}` });
     } catch (error) {
       return res.status(500).json({ error: `${error.message}` });
@@ -103,7 +104,7 @@ export class CartController {
     }
 
     try {
-      await cartManager.update(cid, pid, quantity);
+      await cartService.updateProductInCart(cid, pid, quantity);
       res.json({ payload: `Product ${pid} updated` });
     } catch (error) {
       return res.status(500).json({ error: `${error.message}` });
@@ -123,7 +124,7 @@ export class CartController {
     }
 
     try {
-      await cartManager.deleteAll(cid);
+      await cartService.deleteAllProductsInCart(cid);
       res.json({ payload: `Products deleted from cart ${cid}` });
     } catch (error) {
       return res.status(500).json({ error: `${error.message}` });
@@ -148,8 +149,42 @@ export class CartController {
     }
 
     try {
-      await cartManager.updateAll(cid, toUpdate);
+      await cartService.updateAllCart(cid, toUpdate);
       res.json({ payload: `Cart ${cid} updated` });
+    } catch (error) {
+      return res.status(500).json({ error: `${error.message}` });
+    }
+  };
+
+  static createTicket = async (req, res) => {
+    let { cid } = req.params;
+
+    // Validar que cid es un ObjectId válido
+    if (!isValidObjectId(cid)) {
+      return res.status(400).json({
+        error: `Enter a valid MongoDB id`,
+      });
+    }
+
+    try {
+      let purchaser = `${req.session.user.first_name} ${req.session.user.last_name}`;
+      let productFilter = await ticketService.validateStock(cid);
+      let total = await ticketService.getTotalPrice(productFilter.userCart);
+      let ticket = await ticketService.createTicket(total, purchaser);
+      let newCart = await cartService.getCartById(cid);
+
+      sendTicket(
+        req.session.user.email,
+        ticket.code,
+        total,
+        purchaser,
+        ticket.purchase_datetime
+      );
+
+      newCart.products = productFilter.productsWhithoutStock;
+      await newCart.save();
+
+      res.json({ ticket });
     } catch (error) {
       return res.status(500).json({ error: `${error.message}` });
     }

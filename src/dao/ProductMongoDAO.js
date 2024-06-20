@@ -1,5 +1,5 @@
 import { productsModel } from "./models/productsModel.js";
-export default class ProductManagerMongoDAO {
+export class ProductManagerMongoDAO {
   async create({
     title,
     description,
@@ -76,8 +76,8 @@ export default class ProductManagerMongoDAO {
     return await productsModel.find().lean();
   }
 
-  async getBy(filtro) {
-    return await productsModel.findOne(filtro);
+  async getBy(filter) {
+    return await productsModel.findOne(filter);
   }
 
   async update(id, productData) {

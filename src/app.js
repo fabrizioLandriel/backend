@@ -7,7 +7,6 @@ import { router as viewsRouter } from "./routes/viewsRouter.js";
 import { router as productRouter } from "./routes/productRouter.js";
 import { router as cartRouter } from "./routes/cartRouter.js";
 import { router as sessionsRouter } from "./routes/sessionsRouter.js";
-import mongoose from "mongoose";
 import sessions from "express-session";
 import { messagesModel } from "./dao/models/messagesModel.js";
 import MongoStore from "connect-mongo";
@@ -67,16 +66,3 @@ io.on("connection", (socket) => {
     io.emit("sendMessage", userName, message);
   });
 });
-
-const connDB = async () => {
-  try {
-    await mongoose.connect(config.MONGO_URL, {
-      dbName: config.DB_NAME,
-    });
-    console.log("Mongoose online");
-  } catch (error) {
-    console.log("Error DB", error.message);
-  }
-};
-
-connDB();

@@ -33,7 +33,7 @@ router.get("/githubCallback", passportCall("github"), (req, res) => {
   return res.redirect("/");
 });
 
-router.get("/current", auth(["admin", "user"]), (req, res) => {
+router.get("/current", (req, res) => {
   res.json({ user: req.session.user });
 });
 

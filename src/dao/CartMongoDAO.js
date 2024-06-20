@@ -1,8 +1,8 @@
 import { cartsModel } from "./models/cartsModel.js";
-import ProductManagerMongoDAO from "./ProductManagerMongoDAO.js";
+import { ProductManagerMongoDAO } from "./ProductMongoDAO.js";
 const productManager = new ProductManagerMongoDAO();
 
-export default class CartManagerMongoDAO {
+export class CartManagerMongoDAO {
   async create() {
     return await cartsModel.create({ products: [] });
   }
@@ -83,6 +83,7 @@ export default class CartManagerMongoDAO {
       return `Error: product ${id} not found`;
     }
   }
+
   async updateAll(idCart, toUpdate) {
     try {
       let searchCart = await this.getById(idCart);

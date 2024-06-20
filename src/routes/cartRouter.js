@@ -17,3 +17,5 @@ router.put("/:cid/product/:pid", CartController.updateProductInCart);
 router.delete("/:cid", CartController.deleteAllProductsInCart);
 
 router.put("/:cid", CartController.updateAllCart);
+
+router.get("/:cid/purchase", CartController.createTicket);

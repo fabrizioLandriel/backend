@@ -5,7 +5,7 @@ import path from "path";
 const productManager = new ProductManager(
   path.join(__dirname, "/data/products.json")
 );
-export default class CartManager {
+export class CartManager {
   constructor(path) {
     this.path = path;
   }

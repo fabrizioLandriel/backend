@@ -5,6 +5,9 @@ const addToCart = async (pid) => {
     `http://localhost:8081/api/carts/${cid}/product/${pid}`,
     { method: "post" }
   );
+  console.log(cid);
+  console.log(pid);
+  console.log(res.status);
   if (res.status === 200) {
     Toastify({
       text: `Product ${pid} added`,
@@ -14,11 +17,6 @@ const addToCart = async (pid) => {
       duration: 3000,
     }).showToast();
   }
-};
-
-const logout = async () => {
-  await fetch("http://localhost:8081/api/sessions/logout", { method: "get" });
-  window.location.href = "/login";
 };
 
 const removeFromCart = async (pid) => {
@@ -43,9 +41,10 @@ const removeFromCart = async (pid) => {
 };
 
 const purchase = async (cid) => {
-  let res = await fetch(`http://localhost:8081/api/carts/${cid}`, {
-    method: "delete",
+  let res = await fetch(`http://localhost:8081/api/carts/${cid}/purchase`, {
+    method: "get",
   });
+
   if (res.status === 200) {
     Swal.fire({
       title: "Compra realizada con éxito!",
@@ -53,7 +52,10 @@ const purchase = async (cid) => {
     });
     setTimeout(() => {
       window.location.reload();
-    }, 2000);
+    }, 1500);
+  } else {
+    console.log("error");
+    return;
   }
 };
 
