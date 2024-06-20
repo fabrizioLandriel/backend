@@ -1,6 +1,7 @@
 import { Router } from "express";
-export const router = Router();
 import { CartController } from "../controller/cartController.js";
+import { auth } from "../middlewares/auth.js";
+export const router = Router();
 
 router.get("/", CartController.getAllCarts);
 
@@ -8,7 +9,11 @@ router.post("/", CartController.createCart);
 
 router.get("/:cid", CartController.getCartById);
 
-router.post("/:cid/product/:pid", CartController.addProductToCart);
+router.post(
+  "/:cid/product/:pid",
+  auth["user"],
+  CartController.addProductToCart
+);
 
 router.delete("/:cid/product/:pid", CartController.deleteProductInCart);
 
