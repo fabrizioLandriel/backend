@@ -19,6 +19,7 @@ export class TicketService {
         await product.save();
         productsWhithStock.push(cartProducts);
         userCart.products = productsWhithStock;
+        await userCart.save();
       } else {
         productsWhithoutStock.push(cartProducts);
       }

@@ -1,7 +1,7 @@
 import { cartService } from "../services/CartService.js";
 import { isValidObjectId } from "mongoose";
 import { ticketService } from "../services/ticketService.js";
-import { sendTicket } from "../config/mailing.js";
+import { sendTicket } from "../config/mailingConfig.js";
 
 export class CartController {
   static getAllCarts = async (req, res) => {
@@ -159,7 +159,6 @@ export class CartController {
   static createTicket = async (req, res) => {
     let { cid } = req.params;
 
-    // Validar que cid es un ObjectId válido
     if (!isValidObjectId(cid)) {
       return res.status(400).json({
         error: `Enter a valid MongoDB id`,
@@ -169,6 +168,7 @@ export class CartController {
     try {
       let purchaser = `${req.session.user.first_name} ${req.session.user.last_name}`;
       let productFilter = await ticketService.validateStock(cid);
+
       let total = await ticketService.getTotalPrice(productFilter.userCart);
       let ticket = await ticketService.createTicket(total, purchaser);
       let newCart = await cartService.getCartById(cid);
