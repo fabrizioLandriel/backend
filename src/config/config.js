@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import __dirname from "../utils.js";
+
 dotenv.config({ path: `${__dirname}/.env`, override: true });
 
 export const config = {

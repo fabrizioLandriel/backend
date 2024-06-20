@@ -1,9 +1,8 @@
 import { Router } from "express";
 import passport from "passport";
 import { passportCall } from "../middlewares/passportCall.js";
-import { auth } from "../middlewares/auth.js";
 export const router = Router();
-
+import { UserViewDTO } from "../dao/DTO/UserDTO.js";
 router.get("/error", (req, res) => {
   return res.status(500).json({ error: "Authentication error" });
 });
@@ -34,7 +33,9 @@ router.get("/githubCallback", passportCall("github"), (req, res) => {
 });
 
 router.get("/current", (req, res) => {
-  res.json({ user: req.session.user });
+  let user = req.session.user;
+  let UserDTO = new UserViewDTO(user);
+  res.json({ user: UserDTO });
 });
 
 router.get("/logout", (req, res) => {

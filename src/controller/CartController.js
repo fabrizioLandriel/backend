@@ -1,7 +1,7 @@
 import { cartService } from "../services/CartService.js";
 import { isValidObjectId } from "mongoose";
 import { ticketService } from "../services/ticketService.js";
-import { sendTicket } from "../utils.js";
+import { sendTicket } from "../config/mailing.js";
 
 export class CartController {
   static getAllCarts = async (req, res) => {
