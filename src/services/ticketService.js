@@ -1,5 +1,4 @@
 import { ticketonDAO } from "../dao/factory.js";
-import { ticketsModel } from "../dao/models/ticketModel.js";
 import { cartService } from "./CartService.js";
 import { productService } from "./ProductService.js";
 
@@ -27,18 +26,8 @@ export class TicketService {
     return { userCart, productsWhithoutStock };
   }
 
-  // async createTicket(amount, purchaser) {
-  //   await this.dao.create(amount, purchaser);
-  // }
   async createTicket(amount, purchaser) {
-    let code = Math.floor(Math.random() * 9000000) + 1000000;
-    let purchase_datetime = new Date();
-    return await ticketsModel.create({
-      code,
-      purchase_datetime,
-      amount,
-      purchaser,
-    });
+    return await this.dao.create(amount, purchaser);
   }
 
   async getTotalPrice(cart) {
