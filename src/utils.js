@@ -2,6 +2,7 @@ import { fileURLToPath } from "url";
 import { dirname } from "path";
 import bcrypt from "bcrypt";
 import nodemailer from "nodemailer";
+import { config } from "./config/config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,8 +18,8 @@ const transporter = nodemailer.createTransport({
   service: "gmail",
   port: "587",
   auth: {
-    user: "molinavitillo@gmail.com",
-    pass: "vyrljgezrijhnats",
+    user: config.USER_GMAIL_NODEMAILER,
+    pass: config.PASSWORD_GMAIL_NODEMAILER,
   },
 });
 
@@ -97,6 +98,6 @@ export const sendTicket = (
       subject: `Ticket #${ticketCode}`,
       html: htmlContent,
     })
-    .then((resultado) => console.log(resultado))
+    .then((result) => console.log(result))
     .catch((error) => console.log(error));
 };
