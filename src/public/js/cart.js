@@ -44,19 +44,21 @@ const purchase = async (cid) => {
   let data = await res.json();
 
   if (res.status === 200) {
-    Swal.fire({
-      title: "Compra realizada con exito",
-      icon: "success",
-    });
-    console.log(data);
-    setTimeout(() => {
-      window.location.reload();
-    }, 1500);
+    if (data.ticket) {
+      Swal.fire({
+        title: "Compra realizada con exito",
+        icon: "success",
+      });
+      setTimeout(() => {
+        window.location.reload();
+      }, 1500);
+    } else {
+      Swal.fire({
+        title: "Productos sin stock",
+        icon: "error",
+      });
+    }
   } else {
-    Swal.fire({
-      title: "Productos sin stock",
-      icon: "error",
-    });
     return;
   }
 };
