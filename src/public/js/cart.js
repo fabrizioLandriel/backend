@@ -5,9 +5,6 @@ const addToCart = async (pid) => {
     `http://localhost:8081/api/carts/${cid}/product/${pid}`,
     { method: "post" }
   );
-  console.log(cid);
-  console.log(pid);
-  console.log(res.status);
   if (res.status === 200) {
     Toastify({
       text: `Product ${pid} added`,
@@ -44,17 +41,22 @@ const purchase = async (cid) => {
   let res = await fetch(`http://localhost:8081/api/carts/${cid}/purchase`, {
     method: "get",
   });
+  let data = await res.json();
 
   if (res.status === 200) {
     Swal.fire({
-      title: "Compra realizada con éxito!",
+      title: "Compra realizada con exito",
       icon: "success",
     });
+    console.log(data);
     setTimeout(() => {
       window.location.reload();
     }, 1500);
   } else {
-    console.log("error");
+    Swal.fire({
+      title: "Productos sin stock",
+      icon: "error",
+    });
     return;
   }
 };
