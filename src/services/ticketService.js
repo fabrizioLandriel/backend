@@ -42,9 +42,7 @@ export class TicketService {
 
   async generateTicket(cart, purchaser) {
     let cartItems = await this.validateStock(cart);
-    console.log(cartItems);
     let ticket = await this.createTicket(cartItems.total, purchaser);
-    console.log(ticket);
     if (cartItems.productsWithStock.length >= 1) {
       sendTicket(
         purchaser,

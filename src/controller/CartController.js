@@ -156,16 +156,16 @@ export class CartController {
   };
 
   static createTicket = async (req, res) => {
-    let cart = req.session.user.cart;
+    let { cid } = req.params;
     let purchaser = req.session.user.email;
-    // if (!isValidObjectId(cid)) {
-    //   return res.status(400).json({
-    //     error: `Enter a valid MongoDB id`,
-    //   });
-    // }
+    if (!isValidObjectId(cid)) {
+      return res.status(400).json({
+        error: `Enter a valid MongoDB id`,
+      });
+    }
 
     try {
-      let ticket = await ticketService.generateTicket(cart, purchaser);
+      let ticket = await ticketService.generateTicket(cid, purchaser);
       res.json({ ticket });
     } catch (error) {
       return res.status(500).json({ error: `${error.message}` });
