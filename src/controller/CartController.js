@@ -1,7 +1,6 @@
 import { cartService } from "../services/CartService.js";
 import { isValidObjectId } from "mongoose";
 import { ticketService } from "../services/ticketService.js";
-import { sendTicket } from "../config/mailingConfig.js";
 
 export class CartController {
   static getAllCarts = async (req, res) => {
@@ -157,33 +156,16 @@ export class CartController {
   };
 
   static createTicket = async (req, res) => {
-    let { cid } = req.params;
-
-    if (!isValidObjectId(cid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
+    let cart = req.session.user.cart;
+    let purchaser = req.session.user.email;
+    // if (!isValidObjectId(cid)) {
+    //   return res.status(400).json({
+    //     error: `Enter a valid MongoDB id`,
+    //   });
+    // }
 
     try {
-      let purchaser = `${req.session.user.first_name} ${req.session.user.last_name}`;
-      let productFilter = await ticketService.validateStock(cid);
-
-      let total = await ticketService.getTotalPrice(productFilter.userCart);
-      let ticket = await ticketService.createTicket(total, purchaser);
-      let newCart = await cartService.getCartById(cid);
-
-      sendTicket(
-        req.session.user.email,
-        ticket.code,
-        total,
-        purchaser,
-        ticket.purchase_datetime
-      );
-
-      newCart.products = productFilter.productsWhithoutStock;
-      await newCart.save();
-
+      let ticket = await ticketService.generateTicket(cart, purchaser);
       res.json({ ticket });
     } catch (error) {
       return res.status(500).json({ error: `${error.message}` });

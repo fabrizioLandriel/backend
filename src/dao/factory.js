@@ -4,7 +4,7 @@ import { Singleton } from "./singleton.js";
 export let productDAO;
 export let cartDAO;
 export let userDAO;
-export let ticketonDAO;
+export let ticketDAO;
 
 switch (config.PERSISTENCE.toUpperCase()) {
   case "FS":
@@ -27,7 +27,7 @@ switch (config.PERSISTENCE.toUpperCase()) {
     userDAO = userMongoDAO.UserManagerMongoDAO;
 
     const ticketMongoDAO = await import("./TicketMongoDAO.js");
-    ticketonDAO = ticketMongoDAO.TicketMongoDAO;
+    ticketDAO = ticketMongoDAO.TicketMongoDAO;
 
     break;
 

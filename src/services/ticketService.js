@@ -1,4 +1,5 @@
-import { ticketonDAO } from "../dao/factory.js";
+import { sendTicket } from "../config/mailingConfig.js";
+import { ticketDAO } from "../dao/factory.js";
 import { cartService } from "./CartService.js";
 import { productService } from "./ProductService.js";
 
@@ -6,10 +7,18 @@ export class TicketService {
   constructor(dao) {
     this.dao = new dao();
   }
+  async getTotalPrice(cart) {
+    return cart.reduce((accumulator, products) => {
+      let productPrice = Number(products.product.price);
+      let productQuantity = Number(products.quantity);
+      return accumulator + productPrice * productQuantity;
+    }, 0);
+  }
+
   async validateStock(cart) {
     let userCart = await cartService.getCartById(cart);
-    let productsWhithStock = [];
-    let productsWhithoutStock = [];
+    let productsWithStock = [];
+    let productsWithoutStock = [];
     for (let cartProducts of userCart.products) {
       if (cartProducts.product.stock >= cartProducts.quantity) {
         let product = await productService.getProductsBy({
@@ -17,27 +26,39 @@ export class TicketService {
         });
         product.stock = product.stock - cartProducts.quantity;
         await product.save();
-        productsWhithStock.push(cartProducts);
-        userCart.products = productsWhithStock;
+        productsWithStock.push(cartProducts);
         await userCart.save();
       } else {
-        productsWhithoutStock.push(cartProducts);
+        productsWithoutStock.push(cartProducts);
       }
     }
-    return { userCart, productsWhithoutStock };
+    let total = await this.getTotalPrice(productsWithStock);
+    return { productsWithStock, productsWithoutStock, total };
   }
 
   async createTicket(amount, purchaser) {
     return await this.dao.create(amount, purchaser);
   }
 
-  async getTotalPrice(cart) {
-    return cart.products.reduce((accumulator, products) => {
-      let productPrice = Number(products.product.price);
-      let productQuantity = Number(products.quantity);
-      return accumulator + productPrice * productQuantity;
-    }, 0);
+  async generateTicket(cart, purchaser) {
+    let cartItems = await this.validateStock(cart);
+    console.log(cartItems);
+    let ticket = await this.createTicket(cartItems.total, purchaser);
+    console.log(ticket);
+    if (cartItems.productsWithStock.length >= 1) {
+      sendTicket(
+        purchaser,
+        ticket.code,
+        cartItems.total,
+        purchaser,
+        ticket.purchase_datetime
+      );
+    }
+    let newCart = await cartService.getCartById(cart);
+    newCart.products = cartItems.productsWithoutStock;
+    await newCart.save();
+    return ticket;
   }
 }
 
-export const ticketService = new TicketService(ticketonDAO);
+export const ticketService = new TicketService(ticketDAO);
