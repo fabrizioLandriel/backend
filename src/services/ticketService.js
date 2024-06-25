@@ -42,19 +42,20 @@ export class TicketService {
 
   async generateTicket(cart, purchaser) {
     let ticket;
-    let cartItems = await this.validateStock(cart);
-    if (cartItems.productsWithStock.length >= 1) {
-      ticket = await this.createTicket(cartItems.total, purchaser);
+    let { productsWithStock, productsWithoutStock, total } =
+      await this.validateStock(cart);
+    if (productsWithStock.length >= 1) {
+      ticket = await this.createTicket(total, purchaser);
       sendTicket(
         purchaser,
         ticket.code,
-        cartItems.total,
+        total,
         purchaser,
         ticket.purchase_datetime
       );
     }
     let newCart = await cartService.getCartById(cart);
-    newCart.products = cartItems.productsWithoutStock;
+    newCart.products = productsWithoutStock;
     await newCart.save();
     return ticket;
   }
