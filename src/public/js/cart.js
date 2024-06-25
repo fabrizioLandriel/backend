@@ -54,7 +54,7 @@ const purchase = async (cid) => {
       }, 1500);
     } else {
       Swal.fire({
-        title: "Productos sin stock",
+        title: "Productos sin stock suficiente",
         icon: "error",
       });
     }
