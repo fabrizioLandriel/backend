@@ -39,7 +39,7 @@ const removeFromCart = async (pid) => {
 
 const purchase = async (cid) => {
   let res = await fetch(`http://localhost:8081/api/carts/${cid}/purchase`, {
-    method: "get",
+    method: "post",
   });
   let data = await res.json();
 

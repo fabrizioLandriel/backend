@@ -23,4 +23,4 @@ router.delete("/:cid", CartController.deleteAllProductsInCart);
 
 router.put("/:cid", CartController.updateAllCart);
 
-router.get("/:cid/purchase", CartController.createTicket);
+router.post("/:cid/purchase", CartController.createTicket);
