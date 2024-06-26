@@ -36,8 +36,8 @@ export class TicketService {
     return { productsWithStock, productsWithoutStock, total };
   }
 
-  async createTicket(amount, purchaser) {
-    return await this.dao.create(amount, purchaser);
+  async createTicket(amount, purchaser, products) {
+    return await this.dao.create(amount, purchaser, products);
   }
 
   async generateTicket(cart, purchaser) {
@@ -45,15 +45,17 @@ export class TicketService {
     let { productsWithStock, productsWithoutStock, total } =
       await this.validateStock(cart);
     if (productsWithStock.length >= 1) {
-      ticket = await this.createTicket(total, purchaser);
+      ticket = await this.createTicket(total, purchaser, productsWithStock);
       sendTicket(
         purchaser,
         ticket.code,
         total,
         purchaser,
-        ticket.purchase_datetime
+        ticket.purchase_datetime,
+        productsWithStock
       );
     }
+    console.log(productsWithStock);
     let newCart = await cartService.getCartById(cart);
     newCart.products = productsWithoutStock;
     await newCart.save();
