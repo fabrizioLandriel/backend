@@ -15,7 +15,7 @@ export const sendTicket = (
   amount,
   purchaser,
   purchaseDatetime,
-  products // Nuevo parámetro: array de productos
+  products
 ) => {
   const productsTable = `
       <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">

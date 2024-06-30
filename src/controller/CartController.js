@@ -1,174 +1,310 @@
 import { cartService } from "../services/CartService.js";
 import { isValidObjectId } from "mongoose";
 import { ticketService } from "../services/ticketService.js";
+import { CustomError } from "../utils/CustomError.js";
+import { ERROR_TYPES } from "../utils/EErrors.js";
 
 export class CartController {
-  static getAllCarts = async (req, res) => {
+  static getAllCarts = async (req, res, next) => {
     try {
-      let getAllCarts = await cartService.getAllCarts();
-      return res.json({ getAllCarts });
-    } catch (error) {
-      res.status(500).json({ error: `error getting carts: ${error.message}` });
-    }
-  };
-
-  static createCart = async (req, res) => {
-    try {
-      await cartService.createCart();
-      return res.json({
-        payload: `Cart created!`,
-      });
-    } catch (error) {
-      res.status(500).json({ error: "error creating cart" });
-    }
-  };
-
-  static getCartById = async (req, res) => {
-    let { cid } = req.params;
-    if (!isValidObjectId(cid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
-
-    try {
-      let cartById = await cartService.getCartById(cid);
-      if (!cartById) {
-        return res.status(300).json({ error: "Cart not found" });
-      } else {
-        res.json({ cartById });
+      try {
+        let getAllCarts = await cartService.getAllCarts();
+        return res.json({ getAllCarts });
+      } catch (error) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "CA not found",
+          ERROR_TYPES.NOT_FOUND
+        );
       }
     } catch (error) {
-      res
-        .status(500)
-        .json({ error: `error getting cart ${cid}, ${error.message}` });
+      next(error);
     }
   };
 
-  static addProductToCart = async (req, res) => {
-    let { cid, pid } = req.params;
-
-    if (!isValidObjectId(cid, pid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
-
-    if (!cid || !pid) {
-      return res.status(300).json({ error: "Check unfilled fields" });
-    }
-
+  static createCart = async (req, res, next) => {
     try {
-      await cartService.addProductToCart(cid, pid);
-      let cartUpdated = await cartService.getCartById(cid);
-      res.json({ payload: cartUpdated });
+      try {
+        await cartService.createCart();
+        return res.json({
+          payload: `Cart created!`,
+        });
+      } catch (error) {
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
     } catch (error) {
-      res
-        .status(500)
-        .json({ error: `error when adding product ${pid} to cart ${cid}` });
+      next(error);
     }
   };
 
-  static deleteProductInCart = async (req, res) => {
-    let { cid, pid } = req.params;
-    if (!isValidObjectId(cid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
-
-    if (!cid || !pid) {
-      return res.status(300).json({ error: "Check unfilled fields" });
-    }
-
+  static getCartById = async (req, res, next) => {
     try {
-      await cartService.deleteProductInCart(cid, pid);
-      return res.json({ payload: `Product ${pid} deleted from cart ${cid}` });
+      let { cid } = req.params;
+      if (!isValidObjectId(cid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      try {
+        let cartById = await cartService.getCartById(cid);
+        if (!cartById) {
+          return CustomError.createError(
+            "ERROR",
+            null,
+            "Cart not found",
+            ERROR_TYPES.NOT_FOUND
+          );
+        } else {
+          res.json({ cartById });
+        }
+      } catch (error) {
+        res;
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Internal server error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
     } catch (error) {
-      return res.status(500).json({ error: `${error.message}` });
+      next(error);
     }
   };
 
-  static updateProductInCart = async (req, res) => {
-    let { cid, pid } = req.params;
-    let { quantity } = req.body;
-    if (!isValidObjectId(cid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
-
-    if (!cid || !pid) {
-      return res.status(300).json({ error: "Check unfilled fields" });
-    }
-
+  static addProductToCart = async (req, res, next) => {
     try {
-      await cartService.updateProductInCart(cid, pid, quantity);
-      res.json({ payload: `Product ${pid} updated` });
+      let { cid, pid } = req.params;
+
+      if (!isValidObjectId(cid, pid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      if (!cid || !pid) {
+        return CustomError.createError(
+          "Unfilled fields",
+          null,
+          "Check unfilled fields",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      try {
+        await cartService.addProductToCart(cid, pid);
+        let cartUpdated = await cartService.getCartById(cid);
+        res.json({ payload: cartUpdated });
+      } catch (error) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Internal server error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
     } catch (error) {
-      return res.status(500).json({ error: `${error.message}` });
+      next(error);
     }
   };
 
-  static deleteAllProductsInCart = async (req, res) => {
-    let { cid } = req.params;
-    if (!isValidObjectId(cid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
-
-    if (!cid) {
-      return res.status(300).json({ error: "Check unfilled fields" });
-    }
-
+  static deleteProductInCart = async (req, res, next) => {
     try {
-      await cartService.deleteAllProductsInCart(cid);
-      res.json({ payload: `Products deleted from cart ${cid}` });
+      let { cid, pid } = req.params;
+      if (!isValidObjectId(cid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      if (!cid || !pid) {
+        return CustomError.createError(
+          "Unfilled fields",
+          null,
+          "Check unfilled fields",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      try {
+        await cartService.deleteProductInCart(cid, pid);
+        return res.json({ payload: `Product ${pid} deleted from cart ${cid}` });
+      } catch (error) {
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
     } catch (error) {
-      return res.status(500).json({ error: `${error.message}` });
+      next(error);
     }
   };
 
-  static updateAllCart = async (req, res) => {
-    let { cid } = req.params;
-    let toUpdate = req.body;
-    if (!isValidObjectId(cid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
-
-    if (!cid) {
-      return res.status(400).json({ error: "Cart ID is missing" });
-    }
-
-    if (!toUpdate.product || !toUpdate.quantity) {
-      return res.status(400).json({ error: "Invalid Cart" });
-    }
-
+  static updateProductInCart = async (req, res, next) => {
     try {
-      await cartService.updateAllCart(cid, toUpdate);
-      res.json({ payload: `Cart ${cid} updated` });
+      let { cid, pid } = req.params;
+      let { quantity } = req.body;
+      if (!isValidObjectId(cid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      if (!cid || !pid) {
+        return CustomError.createError(
+          "Unfilled fields",
+          null,
+          "Check unfilled fields",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      try {
+        await cartService.updateProductInCart(cid, pid, quantity);
+        res.json({ payload: `Product ${pid} updated` });
+      } catch (error) {
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
     } catch (error) {
-      return res.status(500).json({ error: `${error.message}` });
+      next(error);
     }
   };
 
-  static createTicket = async (req, res) => {
-    let { cid } = req.params;
-    let purchaser = req.session.user.email;
-    if (!isValidObjectId(cid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
-
+  static deleteAllProductsInCart = async (req, res, next) => {
     try {
-      let ticket = await ticketService.generateTicket(cid, purchaser);
-      res.json({ ticket });
+      let { cid } = req.params;
+      if (!isValidObjectId(cid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      if (!cid) {
+        return CustomError.createError(
+          "Unfilled fields",
+          null,
+          "Check unfilled fields",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      try {
+        await cartService.deleteAllProductsInCart(cid);
+        res.json({ payload: `Products deleted from cart ${cid}` });
+      } catch (error) {
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
     } catch (error) {
-      return res.status(500).json({ error: `${error.message}` });
+      next(error);
+    }
+  };
+
+  static updateAllCart = async (req, res, next) => {
+    try {
+      let { cid } = req.params;
+      let toUpdate = req.body;
+      if (!isValidObjectId(cid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      if (!cid) {
+        return CustomError.createError(
+          "Unfilled fields",
+          null,
+          "Invalid cart",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      if (!toUpdate.product || !toUpdate.quantity) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Invalid cart",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      try {
+        await cartService.updateAllCart(cid, toUpdate);
+        res.json({ payload: `Cart ${cid} updated` });
+      } catch (error) {
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  static createTicket = async (req, res, next) => {
+    try {
+      let { cid } = req.params;
+      let purchaser = req.session.user.email;
+      if (!isValidObjectId(cid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      try {
+        let ticket = await ticketService.generateTicket(cid, purchaser);
+        res.json({ ticket });
+      } catch (error) {
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
+    } catch (error) {
+      next(error);
     }
   };
 }

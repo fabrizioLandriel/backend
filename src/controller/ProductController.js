@@ -1,137 +1,211 @@
 import { io } from "../app.js";
 import { isValidObjectId } from "mongoose";
 import { productService } from "../services/ProductService.js";
+import { CustomError } from "../utils/CustomError.js";
+import { ERROR_TYPES } from "../utils/EErrors.js";
 
 export class ProductController {
-  static getProducts = async (req, res) => {
+  static getProducts = async (req, res, next) => {
     try {
-      let { limit, sort, page, ...filters } = req.query;
-      let products = await productService.getProductsPaginate(
-        limit,
-        page,
-        sort,
-        filters
-      );
-      res.json(products);
+      try {
+        let { limit, sort, page, ...filters } = req.query;
+        let products = await productService.getProductsPaginate(
+          limit,
+          page,
+          sort,
+          filters
+        );
+        return res.json(products);
+      } catch (error) {
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
     } catch (error) {
-      res.status(400).json({ error: `${error.message}` });
+      next(error);
     }
   };
 
-  static getProductById = async (req, res) => {
+  static getProductById = async (req, res, next) => {
     let { pid } = req.params;
     if (!isValidObjectId(pid)) {
-      return res.status(400).json({
-        error: `Ingrese un id valido de MongoDB`,
-      });
+      return CustomError.createError(
+        "ERROR",
+        null,
+        "Enter a valid Mongo ID",
+        ERROR_TYPES.INVALID_ARGUMENTS
+      );
     }
     try {
       let product = await productService.getProductsBy({ _id: pid });
       if (product) {
         res.json({ product });
       } else {
-        return res.json({ error: `Product not found` });
+        return CustomError.createError(
+          "Not found",
+          null,
+          "Product not found",
+          ERROR_TYPES.NOT_FOUND
+        );
       }
     } catch (error) {
-      res.status(400).json({ error: `Product ${pid} not found` });
+      next(error);
     }
   };
 
-  static addProduct = async (req, res) => {
-    let {
-      title,
-      description,
-      code,
-      price,
-      status,
-      stock,
-      category,
-      thumbnails,
-    } = req.body;
-    if (!title || !description || !code || !price || !stock || !category)
-      return res.json({ error: "Check unfilled fields" });
-
-    let exist;
+  static addProduct = async (req, res, next) => {
     try {
-      exist = await productService.getProductsBy({ code });
-    } catch (error) {
-      return res.status(500).json({
-        error: `${error.message}`,
-      });
-    }
+      let {
+        title,
+        description,
+        code,
+        price,
+        status,
+        stock,
+        category,
+        thumbnails,
+      } = req.body;
+      if (!title || !description || !code || !price || !stock || !category)
+        return CustomError.createError(
+          "Unfilled fields",
+          null,
+          "Check unfilled fields",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
 
-    if (exist) {
-      return res
-        .status(400)
-        .json({ error: `Product with code ${code} is already registered` });
-    }
-
-    try {
-      await productService.addProduct({ ...req.body });
-      let productList = await productManager.getPaginate();
-      io.emit("updateProducts", productList);
-      return res.json({ payload: `Product added` });
-    } catch (error) {
-      res.status(300).json({ error: "Error when the product was created" });
-    }
-  };
-
-  static updateProduct = async (req, res) => {
-    let { pid } = req.params;
-    if (!isValidObjectId(pid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
-
-    let toUpdate = req.body;
-
-    if (toUpdate._id) {
-      delete toUpdate._id;
-    }
-
-    if (toUpdate.code) {
       let exist;
       try {
-        exist = await productService.getProductsBy({ code: toUpdate.code });
-        if (exist) {
-          return res.status(400).json({
-            error: `There is already another product with the code ${toUpdate.code}`,
-          });
-        }
+        exist = await productService.getProductsBy({ code });
       } catch (error) {
-        return res.status(500).json({
-          error: `${error.message}`,
-        });
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
       }
-    }
 
-    try {
-      const products = await productService.updateProduct(pid, toUpdate);
-      return res.json(products);
+      if (exist) {
+        return CustomError.createError(
+          "Error",
+          null,
+          `Code ${code} already exist`,
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      try {
+        await productService.addProduct({ ...req.body });
+        let productList = await productService.getAllProducts();
+        io.emit("updateProducts", productList);
+        return res.json({ payload: `Product added` });
+      } catch (error) {
+        return CustomError.createError(
+          "Error",
+          null,
+          "Internal server Error",
+          ERROR_TYPES.INTERNAL_SERVER_ERROR
+        );
+      }
     } catch (error) {
-      res.status(300).json({ error: "Error when modifying the product" });
+      next(error);
     }
   };
 
-  static deleteProduct = async (req, res) => {
-    let { pid } = req.params;
-    if (!isValidObjectId(pid)) {
-      return res.status(400).json({
-        error: `Enter a valid MongoDB id`,
-      });
-    }
+  static updateProduct = async (req, res, next) => {
     try {
-      let products = await productService.deleteProduct(pid);
-      if (products.deletedCount > 0) {
-        let productList = await productService.getProductsPaginate();
-        io.emit("deleteProducts", productList);
-        return res.json({ payload: `Product ${pid} deleted` });
-      } else {
-        return res.status(404).json({ error: `Product ${id} doesnt exist` });
+      let { pid } = req.params;
+      if (!isValidObjectId(pid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+
+      let toUpdate = req.body;
+
+      if (toUpdate._id) {
+        delete toUpdate._id;
+      }
+
+      if (toUpdate.code) {
+        let exist;
+        try {
+          exist = await productService.getProductsBy({ code: toUpdate.code });
+          if (exist) {
+            return CustomError.createError(
+              "Error",
+              null,
+              `Code ${code} already exist`,
+              ERROR_TYPES.INVALID_ARGUMENTS
+            );
+          }
+        } catch (error) {
+          return CustomError.createError(
+            "ERROR",
+            null,
+            "Internal server Error",
+            ERROR_TYPES.INTERNAL_SERVER_ERROR
+          );
+        }
+      }
+
+      try {
+        const products = await productService.updateProduct(pid, toUpdate);
+        return res.json(products);
+      } catch (error) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Error updating product ",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
       }
     } catch (error) {
-      res.status(300).json({ error: `Error deleting product ${pid}` });
+      next(error);
+    }
+  };
+
+  static deleteProduct = async (req, res, next) => {
+    try {
+      let { pid } = req.params;
+      if (!isValidObjectId(pid)) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          "Enter a valid Mongo ID",
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+      try {
+        let products = await productService.deleteProduct(pid);
+        if (products.deletedCount > 0) {
+          let productList = await productService.getProductsPaginate();
+          io.emit("deleteProducts", productList);
+          return res.json({ payload: `Product ${pid} deleted` });
+        } else {
+          return CustomError.createError(
+            "ERROR",
+            null,
+            "Product not found",
+            ERROR_TYPES.NOT_FOUND
+          );
+        }
+      } catch (error) {
+        return CustomError.createError(
+          "ERROR",
+          null,
+          `Error deleting product`,
+          ERROR_TYPES.INVALID_ARGUMENTS
+        );
+      }
+    } catch (error) {
+      next(error);
     }
   };
 }
