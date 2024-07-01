@@ -50,7 +50,7 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
 app.use("/", viewsRouter);
-app.use("/mocking", mockingRouter);
+app.use("/mockingproducts", mockingRouter);
 
 const server = app.listen(PORT, () =>
   console.log(`Server listening in port:${PORT}`)
