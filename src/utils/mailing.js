@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
-import { config } from "./config.js";
+import { config } from "../config/config.js";
+import { logger } from "./logger.js";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   port: "587",
@@ -140,6 +141,34 @@ export const sendTicket = (
       subject: `Ticket #${ticketCode}`,
       html: htmlContent,
     })
-    .then((result) => console.log(result))
-    .catch((error) => console.log(error));
+    .then((result) => logger.info(result))
+    .catch((error) => {
+      if (error.code !== 500) {
+        req.logger.error(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      } else {
+        req.logger.fatal(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      }
+    });
 };

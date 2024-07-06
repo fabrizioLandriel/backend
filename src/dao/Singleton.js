@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { logger } from "../utils/logger.js";
 
 export class Singleton {
   static #connection;
@@ -8,12 +9,12 @@ export class Singleton {
 
   static connect(url, db) {
     if (this.#connection) {
-      console.log("The connection has already been established");
+      logger.info("The connection has already been established");
       return this.#connection;
     }
 
     this.#connection = new Singleton(url, db);
-    console.log("DB connected");
+    logger.info("DB connected");
     return this.#connection;
   }
 }

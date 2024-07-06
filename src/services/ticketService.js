@@ -1,4 +1,4 @@
-import { sendTicket } from "../config/mailingConfig.js";
+import { sendTicket } from "../utils/mailing.js";
 import { ticketDAO } from "../dao/factory.js";
 import { cartService } from "./CartService.js";
 import { productService } from "./ProductService.js";
@@ -55,7 +55,6 @@ export class TicketService {
         productsWithStock
       );
     }
-    console.log(productsWithStock);
     let newCart = await cartService.getCartById(cart);
     newCart.products = productsWithoutStock;
     await newCart.save();

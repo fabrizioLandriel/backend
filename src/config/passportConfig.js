@@ -1,7 +1,8 @@
 import passport from "passport";
 import local from "passport-local";
 import github from "passport-github2";
-import { createHash, validatePassword } from "../utils.js";
+import { createHash } from "../utils/hashPassword.js";
+import __dirname from "../dirname.js";
 import { config } from "./config.js";
 import { cartService } from "../services/CartService.js";
 import { userService } from "../services/userService.js";

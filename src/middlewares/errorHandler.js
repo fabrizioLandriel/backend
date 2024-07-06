@@ -1,5 +1,5 @@
 import { ERROR_TYPES } from "../utils/EErrors.js";
-import __dirname from "../utils.js";
+import __dirname from "../dirname.js";
 
 export const errorHandler = (error, req, res, next) => {
   switch (error.code) {

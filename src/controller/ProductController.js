@@ -25,6 +25,33 @@ export class ProductController {
         );
       }
     } catch (error) {
+      if (error.code !== 500) {
+        req.logger.error(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      } else {
+        req.logger.fatal(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      }
       next(error);
     }
   };
@@ -52,6 +79,33 @@ export class ProductController {
         );
       }
     } catch (error) {
+      if (error.code !== 500) {
+        req.logger.error(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      } else {
+        req.logger.fatal(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      }
       next(error);
     }
   };
@@ -111,6 +165,33 @@ export class ProductController {
         );
       }
     } catch (error) {
+      if (error.code !== 500) {
+        req.logger.error(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      } else {
+        req.logger.fatal(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      }
       next(error);
     }
   };
@@ -167,6 +248,33 @@ export class ProductController {
         );
       }
     } catch (error) {
+      if (error.code !== 500) {
+        req.logger.error(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      } else {
+        req.logger.fatal(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      }
       next(error);
     }
   };
@@ -205,6 +313,33 @@ export class ProductController {
         );
       }
     } catch (error) {
+      if (error.code !== 500) {
+        req.logger.error(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      } else {
+        req.logger.fatal(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      }
       next(error);
     }
   };

@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import __dirname from "../utils.js";
+import __dirname from "../dirname.js";
 
 dotenv.config({ path: `${__dirname}/.env`, override: true });
 
@@ -13,4 +13,5 @@ export const config = {
   CLIENT_SECRET_GITHUB: process.env.CLIENT_SECRET_GITHUB,
   PASSWORD_GMAIL_NODEMAILER: process.env.PASSWORD_GMAIL_NODEMAILER,
   USER_GMAIL_NODEMAILER: process.env.USER_GMAIL_NODEMAILER,
+  MODE: process.env.MODE,
 };

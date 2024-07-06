@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import __dirname from "./utils.js";
+import __dirname from "./dirname.js";
 import { engine } from "express-handlebars";
 import { Server } from "socket.io";
 import { router as viewsRouter } from "./routes/viewsRouter.js";
@@ -16,6 +16,7 @@ import { initPassport } from "./config/passportConfig.js";
 import passport from "passport";
 import { config } from "./config/config.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
+import { logger, middLogger } from "./utils/logger.js";
 
 const PORT = config.PORT;
 
@@ -37,6 +38,7 @@ app.use(
   })
 );
 
+app.use(middLogger);
 initPassport();
 app.use(passport.initialize());
 app.use(passport.session());
@@ -53,13 +55,13 @@ app.use("/", viewsRouter);
 app.use("/mockingproducts", mockingRouter);
 
 const server = app.listen(PORT, () =>
-  console.log(`Server listening in port:${PORT}`)
+  logger.info(`Server listening in port:${PORT}`)
 );
 
 export const io = new Server(server);
 io.on("connection", (socket) => {
   socket.on("connectionServer", (connectionMessage) => {
-    console.log(connectionMessage);
+    logger.info(connectionMessage);
   });
   socket.on("id", async (userName) => {
     let messages = await messagesModel.find();
