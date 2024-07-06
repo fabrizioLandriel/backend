@@ -2,13 +2,14 @@ import express from "express";
 import path from "path";
 import __dirname from "./dirname.js";
 import { engine } from "express-handlebars";
+import compression from "express-compression";
 import { Server } from "socket.io";
 import { router as viewsRouter } from "./routes/viewsRouter.js";
 import { router as productRouter } from "./routes/productRouter.js";
 import { router as cartRouter } from "./routes/cartRouter.js";
 import { router as sessionsRouter } from "./routes/sessionsRouter.js";
-import compression from "express-compression";
 import { router as mockingRouter } from "./routes/mockingRouter.js";
+import { router as loggerRouter } from "./routes/loggerRouter.js";
 import sessions from "express-session";
 import { messagesModel } from "./dao/models/messagesModel.js";
 import MongoStore from "connect-mongo";
@@ -51,8 +52,9 @@ app.use(express.static(path.join(__dirname, "/public")));
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartRouter);
 app.use("/api/sessions", sessionsRouter);
-app.use("/", viewsRouter);
 app.use("/mockingproducts", mockingRouter);
+app.use("/loggerTest", loggerRouter);
+app.use("/", viewsRouter);
 
 const server = app.listen(PORT, () =>
   logger.info(`Server listening in port:${PORT}`)
