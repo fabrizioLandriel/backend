@@ -141,7 +141,10 @@ export const sendTicket = (
       subject: `Ticket #${ticketCode}`,
       html: htmlContent,
     })
-    .then((result) => logger.info(result))
+    .then((result) => {
+      result = JSON.stringify(result);
+      logger.debug(result);
+    })
     .catch((error) => {
       if (error.code !== 500) {
         req.logger.error(

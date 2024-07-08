@@ -36,7 +36,7 @@ const consoleTransport = new winston.transports.Console({
     winston.format.simple()
   ),
 });
-if (config.MODE === "DEV") {
+if (config.MODE.toUpperCase() === "DEV") {
   logger.add(consoleTransport);
 }
 
