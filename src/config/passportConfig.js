@@ -71,7 +71,7 @@ export const initPassport = () => {
       {
         clientID: config.CLIENT_ID_GITHUB,
         clientSecret: config.CLIENT_SECRET_GITHUB,
-        callbackURL: "http://localhost:8081/api/sessions/githubCallback",
+        callbackURL: "http://localhost:8081/api/sessions/githubCb",
       },
       async (tokenAcceso, tokenRefresh, profile, done) => {
         try {

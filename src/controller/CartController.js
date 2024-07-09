@@ -12,7 +12,7 @@ export class CartController {
         return res.json({ getAllCarts });
       } catch (error) {
         return CustomError.createError(
-          "ERROR",
+          "FALLO",
           null,
           "Carts not found",
           ERROR_TYPES.NOT_FOUND

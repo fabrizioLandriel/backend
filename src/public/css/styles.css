@@ -1,6 +1,6 @@
 /* Navbar */
 .navbar-custom {
-  background-color: #007bff;
+  background-color: #2ba07b;
   height: 80px;
 }
 .navbar-custom h1 {
@@ -133,10 +133,10 @@ td {
   align-items: flex-end;
 }
 .me p {
-  background-color: #005c4b;
+  background-color: #1d5692;
 }
 .others p {
-  background-color: #353535;
+  background-color: #000000;
 }
 
 .mainChat {
@@ -193,10 +193,10 @@ input {
   font-size: 20px;
 }
 .pagination button {
-  color: #007bff;
+  color: #2ba07b;
   text-decoration: none;
   padding: 8px 16px;
-  border: 1px solid #007bff;
+  border: 1px solid #2ba07b;
   border-radius: 4px;
   margin: 0 5px;
 }
@@ -212,7 +212,7 @@ input {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #192229;
+  background-color: #2ba07b;
 }
 .login-form {
   max-width: 400px;
@@ -224,7 +224,7 @@ input {
 .login-title {
   text-align: center;
   margin-bottom: 30px;
-  color: #333;
+  color: #000000;
 }
 .error-message {
   font-weight: bold;
@@ -236,9 +236,7 @@ input {
   text-align: center;
   margin-top: 20px;
 }
-.register-link a {
-  font-weight: bold;
-}
+
 .login-btn,
 .github-link {
   display: block;
@@ -281,7 +279,7 @@ input {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #192229;
+  background-color: #2ba07b;
 }
 .register-form {
   max-width: 400px;
@@ -299,9 +297,6 @@ input {
   display: block;
   text-align: center;
   margin-top: 20px;
-}
-.login-link a {
-  font-weight: bold;
 }
 
 /* Profile */
