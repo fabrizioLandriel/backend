@@ -1,7 +1,7 @@
 import { sendTicket } from "../utils/mailing.js";
 import { ticketDAO } from "../dao/factory.js";
-import { cartService } from "./CartService.js";
-import { productService } from "./ProductService.js";
+import { cartService } from "./cartsService.js";
+import { productService } from "./productsService.js";
 
 export class TicketService {
   constructor(dao) {
@@ -55,11 +55,11 @@ export class TicketService {
         productsWithStock
       );
     }
-    let newCart = await cartService.getCartById(cart);
+    let newCart = await cartsService.getCartById(cart);
     newCart.products = productsWithoutStock;
     await newCart.save();
     return ticket;
   }
 }
 
-export const ticketService = new TicketService(ticketDAO);
+export const ticketsService = new TicketService(ticketDAO);

@@ -126,9 +126,7 @@ export const sendTicket = (
                         ${productsTable}
                     </div>
                 </div>
-                <div class="footer">
-                    <p>2024 Victor Molina. Todos los derechos reservados.</p>
-                </div>
+                
             </div>
         </body>
         </html>
@@ -136,11 +134,59 @@ export const sendTicket = (
 
   transporter
     .sendMail({
-      from: "Victor Molina <molinavitillo@gmail.com>",
+          from: "Fabrizio Landriel <fabrilandriel19@gmail.com>",
       to: to,
       subject: `Ticket #${ticketCode}`,
       html: htmlContent,
     })
+    .then((result) => {
+      result = JSON.stringify(result);
+      logger.debug(result);
+    })
+    .catch((error) => {
+      if (error.code !== 500) {
+        req.logger.error(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      } else {
+        req.logger.fatal(
+          JSON.stringify(
+            {
+              name: error.name,
+              message: error.message,
+              stack: error.stack,
+              code: error.code,
+            },
+            null,
+            5
+          )
+        );
+      }
+    });
+};
+
+export const sendResetPassword = (token, user) => {
+  const mailOptions = {
+    to: user.email,
+    from: "Fabrizio Landriel <fabrilandriel19@gmail.com>",
+    subject: "Password Reset",
+    text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.
+      Please click on the following link, or paste this into your browser to complete the process:
+      http://localhost:8081/reset/${token}
+      If you did not request this, please ignore this email and your password will remain unchanged.`,
+  };
+
+  transporter
+    .sendMail(mailOptions)
     .then((result) => {
       result = JSON.stringify(result);
       logger.debug(result);

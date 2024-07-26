@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import paginate from "mongoose-paginate-v2";
+import { type } from "os";
 const productsCollection = "products";
 const productsSchema = new mongoose.Schema({
   title: String,
@@ -10,6 +11,10 @@ const productsSchema = new mongoose.Schema({
   stock: Number,
   category: String,
   thumbnails: Array,
+  owner: {
+    type: String,
+    default : "admin"
+  }
 });
 
 productsSchema.plugin(paginate);
