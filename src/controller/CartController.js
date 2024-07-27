@@ -1,9 +1,9 @@
-import { cartService } from "../services/cartsService.js";
+import { cartService } from "../services/cartService.js";
 import { isValidObjectId } from "mongoose";
-import { ticketsService } from "../services/ticketsService.js";
+import { ticketService } from "../services/ticketService.js";
 import { CustomError } from "../utils/CustomError.js";
 import { ERROR_TYPES } from "../utils/EErrors.js";
-import { productService } from "../services/productsService.js";
+import { productService } from "../services/productService.js";
 
 export class CartController {
   static getAllCarts = async (req, res, next) => {
@@ -186,13 +186,15 @@ export class CartController {
       const userRole = req.session.user.role.toLowerCase();
       const userEmail = req.session.user.email;
       let product = await productService.getProductsBy({ _id: pid });
-      if (userRole == "premium" || product.owner == userEmail) {
-        return CustomError.createError(
-          "Premium User Restriction",
-          null,
-          "Premium users cannot add their own products to the cart",
-          ERROR_TYPES.UNAUTHORIZED
-        );
+      if (userRole.toLowerCase() == "premium") {
+        if (product.owner == userEmail) {
+          return CustomError.createError(
+            "Premium User Restriction",
+            null,
+            "Premium users cannot add their own products to the cart",
+            ERROR_TYPES.UNAUTHORIZED
+          );
+        }
       }
 
       try {
@@ -504,7 +506,7 @@ export class CartController {
       }
 
       try {
-        let ticket = await ticketsService.generateTicket(cid, purchaser);
+        let ticket = await ticketService.generateTicket(cid, purchaser);
         res.json({ ticket });
       } catch (error) {
         return CustomError.createError(

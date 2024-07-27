@@ -1,8 +1,8 @@
 import { Router } from "express";
 export const router = Router();
 import { auth } from "../middlewares/auth.js";
-import { cartService } from "../services/cartsService.js";
-import { productService } from "../services/productsService.js";
+import { cartService } from "../services/cartService.js";
+import { productService } from "../services/productService.js";
 import { UserViewDTO } from "../dao/DTO/UserDTO.js";
 
 router.get("/", auth(["admin", "user", "premium"]), (req, res) => {

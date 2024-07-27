@@ -1,7 +1,7 @@
 import { sendTicket } from "../utils/mailing.js";
 import { ticketDAO } from "../dao/factory.js";
-import { cartService } from "./cartsService.js";
-import { productService } from "./productsService.js";
+import { cartService } from "./cartService.js";
+import { productService } from "./productService.js";
 
 export class TicketService {
   constructor(dao) {
@@ -62,4 +62,4 @@ export class TicketService {
   }
 }
 
-export const ticketsService = new TicketService(ticketDAO);
+export const ticketService = new TicketService(ticketDAO);
