@@ -20,7 +20,7 @@ Swal.fire({
     Toastify({
       text: `${name} conectado`,
       style: {
-        background: "linear-gradient(to right, #00b09b, #96c93d)",
+        background: "red",
       },
       duration: 3000,
     }).showToast();

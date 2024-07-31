@@ -8,6 +8,9 @@ const transporter = nodemailer.createTransport({
     user: config.USER_GMAIL_NODEMAILER,
     pass: config.PASSWORD_GMAIL_NODEMAILER,
   },
+  tls: {
+    rejectUnauthorized: false
+  }
 });
 
 export const sendTicket = (
@@ -71,7 +74,7 @@ export const sendTicket = (
                     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                 }
                 .header {
-                    background-color: #4CAF50;
+                    background-color: #2e5987;
                     color: #ffffff;
                     padding: 10px;
                     text-align: center;
@@ -145,7 +148,7 @@ export const sendTicket = (
     })
     .catch((error) => {
       if (error.code !== 500) {
-        req.logger.error(
+        logger.error(
           JSON.stringify(
             {
               name: error.name,
@@ -158,7 +161,7 @@ export const sendTicket = (
           )
         );
       } else {
-        req.logger.fatal(
+        logger.fatal(
           JSON.stringify(
             {
               name: error.name,
@@ -193,7 +196,7 @@ export const sendResetPassword = (token, user) => {
     })
     .catch((error) => {
       if (error.code !== 500) {
-        req.logger.error(
+        logger.error(
           JSON.stringify(
             {
               name: error.name,
@@ -206,7 +209,7 @@ export const sendResetPassword = (token, user) => {
           )
         );
       } else {
-        req.logger.fatal(
+        logger.fatal(
           JSON.stringify(
             {
               name: error.name,

@@ -7,9 +7,9 @@ const addToCart = async (pid) => {
   );
   if (res.status === 200) {
     Toastify({
-      text: `Product ${pid} added`,
+      text: `producto ${pid} agregado`,
       style: {
-        background: "linear-gradient(to right, #00b09b, #96c93d)",
+        background: "#2e5987",
       },
       duration: 3000,
     }).showToast();
@@ -25,9 +25,9 @@ const removeFromCart = async (pid) => {
   );
   if (res.status === 200) {
     Toastify({
-      text: `Product ${pid} deleted`,
+      text: `producto ${pid} agregado`,
       style: {
-        background: "linear-gradient(to right, #ff4b2b, #ff416c)",
+        background: "red",
       },
       duration: 3000,
     }).showToast();

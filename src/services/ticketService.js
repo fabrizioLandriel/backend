@@ -55,7 +55,7 @@ export class TicketService {
         productsWithStock
       );
     }
-    let newCart = await cartsService.getCartById(cart);
+    let newCart = await cartService.getCartById(cart);
     newCart.products = productsWithoutStock;
     await newCart.save();
     return ticket;
