@@ -25,7 +25,7 @@ const removeFromCart = async (pid) => {
   );
   if (res.status === 200) {
     Toastify({
-      text: `producto ${pid} agregado`,
+      text: `producto ${pid} eliminado`,
       style: {
         background: "red",
       },
