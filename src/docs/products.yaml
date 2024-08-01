@@ -1,0 +1,67 @@
+paths:
+  /api/products:
+    get:
+      summary: Obtener todos los productos
+      tags:
+        - Products
+      description: Recupera una lista de todos los productos disponibles con opciones de paginación y filtrado.
+      responses:
+        "200":
+          description: Una lista de productos
+        "500":
+          description: Error interno del servidor
+
+    post:
+      summary: Añadir un nuevo producto
+      tags:
+        - Products
+      description: Crea un nuevo producto. Asegúrese de proporcionar todos los campos requeridos.
+      responses:
+        "201":
+          description: Producto añadido con éxito
+        "400":
+          description: Datos de producto no válidos
+        "500":
+          description: Error interno del servidor
+
+  /api/products/{pid}:
+    get:
+      summary: Obtener producto por ID
+      tags:
+        - Products
+      description: Recupera un producto específico por su ID.
+      responses:
+        "200":
+          description: Producto encontrado
+        "400":
+          description: ID de producto no válido
+        "404":
+          description: Producto no encontrado
+
+    put:
+      summary: Actualizar un producto
+      tags:
+        - Products
+      description: Actualiza un producto existente. Solo se pueden actualizar los campos permitidos.
+      responses:
+        "200":
+          description: Producto actualizado con éxito
+        "400":
+          description: Datos de producto no válidos
+        "404":
+          description: Producto no encontrado
+
+    delete:
+      summary: Eliminar un producto
+      tags:
+        - Products
+      description: Elimina un producto específico por su ID. Requiere privilegios de administrador o propietario del producto.
+      responses:
+        "200":
+          description: Producto eliminado con éxito
+        "400":
+          description: ID de producto no válido
+        "403":
+          description: No autorizado para eliminar el producto
+        "404":
+          description: Producto no encontrado
