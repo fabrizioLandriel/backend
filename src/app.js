@@ -20,11 +20,13 @@ import passport from "passport";
 import { config } from "./config/config.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { logger, middLogger } from "./utils/logger.js";
+import { specs } from "./utils/swagger.js";
+import swaggerJSDoc from "swagger-jsdoc";
+import swaggerUI from "swagger-ui-express"
 
 const PORT = config.PORT;
-
 const app = express();
-
+app.use("/api-docs/", swaggerUI.serve, swaggerUI.setup(specs));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(compression({ brotli: { enabled: true } }));
